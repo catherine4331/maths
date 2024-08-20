@@ -1,0 +1,6 @@
+# TeXStudio working files
+
+*.aux
+*.log
+*.pdf
+*.synctex.gz
