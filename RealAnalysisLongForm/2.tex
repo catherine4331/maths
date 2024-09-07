@@ -1,12 +1,34 @@
 \documentclass{article}
 \usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
 
 \author{Catherine Reid}
 \title{Chapter 2 notes \& solutions}
 \date{}
 
 \begin{document}
-	
-	\maketitle
-	
+
+\maketitle
+
+\textbf{Theorem 2.13}: $(|A| < | \mathcal{P}(A)|)$. If A is a set and $\mathcal{P}(A)$ is the power set of A, then
+\begin{align*}
+	|A| < | \mathcal{P}(A)|.
+\end{align*}
+
+\begin{proof}
+For the sake of contradiction assume that $|A| \geq | \mathcal{P}(A)|$. This means there exists a surjection $f: A \mapsto B$.\\
+
+We will define a set $B \subset A$ which cannot be in the image set of $f$. Let 
+\begin{align*}
+	B = \left\{a \in A: a \notin f(a) \right\}
+\end{align*}
+
+Assume for contradiction that there exists some $b \in A$ such that $f(b) = B$. We have defined $B$ such that $b \in B$ if and only if $b \notin f(b)$ and we have assumed that $f(b) = B$.
+
+This is equivalent to $b \in f(b)$ if and only if $b \notin f(b)$ which is a contradiction.
+So no $b$ exists such that $f(b) = B$ and therefore we can conclude that $|A| < | \mathcal{P}(A)|$.
+
+\end{proof}
+
 \end{document}

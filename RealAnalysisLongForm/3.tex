@@ -1,0 +1,59 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+\author{Catherine Reid}
+\title{Chapter 3 notes \& solutions}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\textbf{Theorem 3.5}: A sequence $(a_n)$ is bounded if and only if there exists some $C \in R$ such that $|a_n| \leq C$ for all $n$.
+
+\begin{proof}
+	Firstly assume that the sequence $(a_n)$ is bounded. Then there exists an upper and lower bound such that
+	\begin{align*}
+		L \leq a_n \leq U &  & \text{for all }n
+	\end{align*}
+
+	Let $C = \max(U, |L|)$. We note that this means $U \leq C$ and $-C \leq -|L|$, so we have
+	\begin{align*}
+		-C \leq -|L| \leq L \leq a_n \leq U \leq C
+	\end{align*}
+
+	And so
+	\begin{align*}
+		-C \leq a_n \leq C
+	\end{align*}
+
+	Therefore by proposition 1.12 $|a_n| \leq C$.
+
+	Now, assume that there exists some $C \in R$ such that $|a_n| \leq C$ for all $n$.  By the defintion of the absolute value this means that
+	\begin{align*}
+		-C \leq a_n \leq C
+	\end{align*}
+
+	By setting $L = -C$ and $U = C$, we have shown that
+	\begin{align*}
+		L \leq a_n \leq U
+	\end{align*}
+
+	which means $(a_n)$ is bounded as required. This concludes the proof.
+\end{proof}
+
+\textbf{Example 3.9}: Show that the sequence
+\begin{align*}
+	(a_n) = \left(1, \frac{1}{2}, \frac{1}{3}, \frac{1}{4},...\right)
+\end{align*}
+converges to 0.
+
+Let $\epsilon > 0$. Let $N = \tfrac{1}{\epsilon}$. Then for any $n > N$ we have,
+\begin{align*}
+	|a_n - a| = |\frac{1}{n} - 0| = \frac{1}{n} < \frac{1}{N} = \frac{1}{1/\epsilon} = \epsilon.
+\end{align*}
+
+That is $|a_n - a| < \epsilon$. Therefore we have shown that $(a_n) \rightarrow 0$.
+\end{document}
