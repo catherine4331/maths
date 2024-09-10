@@ -2,6 +2,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
+\setlength{\parindent}{0pt}
 
 \author{Catherine Reid}
 \title{Chapter 3 notes \& solutions}
@@ -50,10 +51,23 @@
 \end{align*}
 converges to 0.
 
-Let $\epsilon > 0$. Let $N = \tfrac{1}{\epsilon}$. Then for any $n > N$ we have,
-\begin{align*}
-	|a_n - a| = |\frac{1}{n} - 0| = \frac{1}{n} < \frac{1}{N} = \frac{1}{1/\epsilon} = \epsilon.
-\end{align*}
+\begin{proof}
+	Let $\varepsilon > 0$. Let $N = \tfrac{1}{\varepsilon}$. Then for any $n > N$ we have,
+	\begin{align*}
+		|a_n - a| = |\frac{1}{n} - 0| = \frac{1}{n} < \frac{1}{N} = \frac{1}{1/\varepsilon} = \varepsilon.
+	\end{align*}
 
-That is $|a_n - a| < \epsilon$. Therefore we have shown that $(a_n) \rightarrow 0$.
+	That is $|a_n - a| < \varepsilon$. Therefore we have shown that $(a_n) \rightarrow 0$.
+\end{proof}
+
+\textbf{Example 3.10}: Let $a_n = 5 - \frac{1}{n^2}$. Show that $a_n \rightarrow 5$ as $n \rightarrow \infty$
+
+\begin{proof}
+	Let $\varepsilon > 0$. Let $N = \tfrac{1}{\sqrt{\varepsilon}}$. Then for any $n > N$ we have,
+	\begin{align*}
+		|a_n - a| = |5 - \frac{1}{n^2} - 5| = \frac{1}{n^2} < \frac{1}{N^2} = \frac{1}{1 / \sqrt{\varepsilon}^2} = \varepsilon.
+	\end{align*}
+
+	That is $|a_n - a| < \varepsilon$. Therefore we have shown that $(a_n) \rightarrow 5$.
+\end{proof}
 \end{document}
