@@ -83,4 +83,61 @@ converges to 0.
 
 	That is $|a_n - a| < \varepsilon$. Therefore we have shown that $(a_n) \rightarrow 3$.
 \end{proof}
+
+\textbf{Example 3.16}: Let $a_n = n^2$. Show that $\lim_{x \to \infty} a_n = \infty$
+\begin{proof}
+	Let $M > 0$. Let $N = \sqrt{M}$. Then for any $n > N$ we have,
+	\begin{align*}
+		a_n = n^2 > N^2 = \left(\sqrt{M}\right)^2 = M
+	\end{align*}
+
+	So we have shown that if $n > N$, then $a_n > M$. Thus $\lim_{x \to \infty} a_n = \infty$
+\end{proof}
+
+\textbf{Example 3.18}: Let $a_n = (-1)^n$. Prove that $(a_n)$ diverges
+
+\begin{proof}
+	Assume for contradiction that there is some $a$ such that $a_n \rightarrow a$. Let $\varepsilon = \tfrac{1}{2}$. Since we have assumed that
+	$a_n \rightarrow a$, there must be some $N$ for which, for all $N > n$, we have $|a_n - a| < \frac{1}{2}$. That is $|(-1)^n - a| < \frac{1}{2}$ for all $n > N$.
+	We proceed by cases.
+
+	\begin{description}
+		\item[Even $n$.]
+		      If $n$ is even and $n > N$, then we have
+		      \begin{align*}
+			      \left\lvert1 - a\right\rvert & < \frac{1}{2}  \\
+			      -\frac{1}{2} < 1 - a         & < \frac{1}{2}  \\
+			      \frac{3}{2} < -a             & < -\frac{1}{2} \\
+			      \frac {1}{2} < a             & < \frac{3}{2}
+		      \end{align*}
+		\item[Odd $n$.]
+		      If $n$ is odd and $n > N$, then we have
+		      \begin{align*}
+			      \left\lvert-1 - a\right\rvert & < \frac{1}{2}  \\
+			      \frac{1}{2} < -1 -a           & < \frac{1}{2}  \\
+			      \frac{1}{2} < -a              & < \frac{3}{2}  \\
+			      -\frac{3}{2} < a              & < -\frac{1}{2}
+		      \end{align*}
+	\end{description}
+
+	But this is clearly a contradiction as no $a$ can be inside both of $(-\frac{3}{2}, -\frac{1}{2})$ and $(\frac{1}{2}, \frac{3}{2})$.
+	Therefore $a_n \nrightarrow a$.
+\end{proof}
+
+We can use the triangle inequality for a more magical proof
+\begin{proof}
+	Again, let $\varepsilon = \frac{1}{2}$. The even case still gives $\left\lvert1 - a\right\rvert < \frac{1}{2}$ and the odd case
+	gives $\left\lvert-1 - a\right\rvert < \frac{1}{2}$, although we will rewrite this as $\left\lvert1 + a\right\rvert < \frac{1}{2}$.
+	Now, by the triangle inequality
+	\begin{align*}
+		2 = \left\lvert(1 + a) + (1 - a)\right\rvert \le |1 + a| + |1 - a|
+	\end{align*}
+
+	But we have assumed that the absolute values on the right are both less that $\frac{1}{2}$. So
+	\begin{align*}
+		2 = \left\lvert(1 + a) + (1 - a)\right\rvert \le |1 + a| + |1 - a| = \frac{1}{2} + \frac{1}{2} = 1
+	\end{align*}
+
+	This gives $2 < 1$, a contradiction
+\end{proof}
 \end{document}
