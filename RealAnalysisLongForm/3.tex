@@ -65,9 +65,22 @@ converges to 0.
 \begin{proof}
 	Let $\varepsilon > 0$. Let $N = \tfrac{1}{\sqrt{\varepsilon}}$. Then for any $n > N$ we have,
 	\begin{align*}
-		|a_n - a| = |5 - \frac{1}{n^2} - 5| = \frac{1}{n^2} < \frac{1}{N^2} = \frac{1}{1 / \sqrt{\varepsilon}^2} = \varepsilon.
+		|a_n - a| = \left\lvert5 - \frac{1}{n^2} - 5\right\rvert = \frac{1}{n^2} < \frac{1}{N^2} = \frac{1}{1 / \sqrt{\varepsilon}^2} = \varepsilon.
 	\end{align*}
 
 	That is $|a_n - a| < \varepsilon$. Therefore we have shown that $(a_n) \rightarrow 5$.
+\end{proof}
+
+\textbf{Example 3.11}: Let $a_n = \dfrac{3n + 1}{n +2}$. Prove that $\lim_{x \to \infty} a_n = 3$
+
+\begin{proof}
+	Let $\varepsilon > 0$. Let $N = \tfrac{5}{\varepsilon} - 2$. Then for any $n > N$ we have,
+	\begin{align*}
+		|a_n - a| & = \left\lvert\frac{3n + 1}{n + 2} - 3\right\rvert                                   \\
+		          & = \left\lvert\frac{3n + 1 - 3n - 6}{n + 2}\right\rvert                              \\
+		          & = \frac{5}{n + 2} < \frac{5}{N + 2} = \frac{5}{5/\varepsilon - 2 + 2} = \varepsilon \\
+	\end{align*}
+
+	That is $|a_n - a| < \varepsilon$. Therefore we have shown that $(a_n) \rightarrow 3$.
 \end{proof}
 \end{document}
