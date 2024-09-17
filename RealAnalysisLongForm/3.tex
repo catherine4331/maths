@@ -138,6 +138,75 @@ We can use the triangle inequality for a more magical proof
 		2 = \left\lvert(1 + a) + (1 - a)\right\rvert \le |1 + a| + |1 - a| = \frac{1}{2} + \frac{1}{2} = 1
 	\end{align*}
 
-	This gives $2 < 1$, a contradiction
+	This gives $2 \le 1$, a contradiction
+\end{proof}
+
+\textbf{Proposition 3.19} A sequence can not have more than one limit
+\begin{proof}
+	Suppose for contradiction that $a_n \rightarrow a$ and $a_n \rightarrow b$, where $a \neq b$. Without loss of generality,
+	assume that $a < b$. Let $\varepsilon = (b - a)/ 3$. Since $a_n \rightarrow a$ there exists $N_1$ such that for $n > N_1$ we have
+	$|a_n - a| < (b - a)/ 3$. Likewise since $a_n \rightarrow b$ there exists $N_2$ such that for $n > N_2$ we have $|a_n - b| < (b - a)/ 3$.
+	Let $N = \max\{N_1, N_2\}$. Then for $n > N$, we have
+
+	\begin{align*}
+		-\frac{b - a}{3} < a_n - a < \frac{b - a}{3}   &  & \text{and} &  & -\frac{b - a}{3} < a_n - b < \frac{b - a}{3}    \\
+		a -\frac{b - a}{3} < a_n < \frac{b - a}{3} + a &  & \text{and} &  & b - \frac{b - a}{3} < a_n < \frac{b - a}{3} + b
+	\end{align*}
+
+	In particular,
+	\begin{align*}
+		a_n < \frac{2a + b}{3} &  & \text{and} &  & \frac{2b + a}{3} < a_n
+	\end{align*}
+
+	Now, since $a < b$, we have $2a + b < 2b + a$. However this implies
+	\begin{align*}
+		a_n < \frac{2a + b}{3} < \frac{2b + a}{3} < a_n
+	\end{align*}
+	which is a contradiction.
+\end{proof}
+
+Again we can use the triangle inequality for a second proof
+\begin{proof}
+	Let $\varepsilon > 0$. Since $\varepsilon/2 > 0$ and $a_n \rightarrow a$, there exists some $N_1$ such that for $n > N_1$
+	we have $|a_n - a| < \varepsilon/2$. Since $\varepsilon/2 > 0$ and $a_n \rightarrow b$, there exists some $N_2$ such that for $n > N_1$
+	we have $|a_n - b| < \varepsilon/2$. Let $N = \max\{N_1, N_2\}$. Then for $n > N$, we have
+	\begin{align*}
+		|a - b| & = |a - a_n + a_n - b|           \\
+		        & \le |a - a_n| + |a_n - b|       \\
+		        & = |a_n - a| + |a_n - b|         \\
+		        & < \varepsilon/2 + \varepsilon/2 \\
+		        & = \varepsilon
+	\end{align*}
+
+	Since this holds for any $\varepsilon > 0$, we have shown that $|a - b| < \varepsilon$ for all $\varepsilon > 0$. This implies that
+	$a = b$, showing that $a_n$ can only converge to a single limit.
+\end{proof}
+
+\textbf{Proposition 3.20} If $(a_n)$ is a convergent sequence then $(a_n)$ is bounded.
+\begin{proof}
+	Assume that $(a_n) \rightarrow a$. Let $\varepsilon = 1$. Then there is some $N$ such that for $n > N$ we have
+	\begin{align*}
+		|a_n - a| < 1
+	\end{align*}
+
+	That is $-1 < a_n - a < 1$ for all $n > N$. Let
+	\begin{align*}
+		U = \max\{a_1, a_2, a_3, ..., a_N, a + 1\}
+	\end{align*}
+	and
+	\begin{align*}
+		L = \min\{a_1, a_2, a_3, ..., a_N, a - 1\}
+	\end{align*}
+
+	Note that if $n \le N$, then $L \le a_n \le U$, since each $a_n$ is included in the sets which we are taking the maximum
+	and minimum of. And if $n > N$, then we have already noted that $a - 1 < a_n < a + 1$, which implies that
+	\begin{align*}
+		L \le a - 1 < a_n < a + 1 \le U,
+	\end{align*}
+	and hence $L \le a_n \le U$. Combining these cases gives
+	\begin{align*}
+		L \le a_n \le U
+	\end{align*}
+	for all $n$. Hence $(a_n)$ is bounded.
 \end{proof}
 \end{document}
