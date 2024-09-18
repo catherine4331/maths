@@ -141,7 +141,7 @@ We can use the triangle inequality for a more magical proof
 	This gives $2 \le 1$, a contradiction
 \end{proof}
 
-\textbf{Proposition 3.19} A sequence can not have more than one limit
+\textbf{Proposition 3.19}: A sequence can not have more than one limit
 \begin{proof}
 	Suppose for contradiction that $a_n \rightarrow a$ and $a_n \rightarrow b$, where $a \neq b$. Without loss of generality,
 	assume that $a < b$. Let $\varepsilon = (b - a)/ 3$. Since $a_n \rightarrow a$ there exists $N_1$ such that for $n > N_1$ we have
@@ -182,7 +182,7 @@ Again we can use the triangle inequality for a second proof
 	$a = b$, showing that $a_n$ can only converge to a single limit.
 \end{proof}
 
-\textbf{Proposition 3.20} If $(a_n)$ is a convergent sequence then $(a_n)$ is bounded.
+\textbf{Proposition 3.20}: If $(a_n)$ is a convergent sequence then $(a_n)$ is bounded.
 \begin{proof}
 	Assume that $(a_n) \rightarrow a$. Let $\varepsilon = 1$. Then there is some $N$ such that for $n > N$ we have
 	\begin{align*}
@@ -208,5 +208,40 @@ Again we can use the triangle inequality for a second proof
 		L \le a_n \le U
 	\end{align*}
 	for all $n$. Hence $(a_n)$ is bounded.
+\end{proof}
+
+\textbf{Theorem 3.23}: (Sequence squeeze theorem). Assume that $a_n \le x_n \le b_n$ for all $n$. Furthermore, assume that
+\begin{align*}
+	a_n \rightarrow L &  & \text{and} &  & b_n \rightarrow L
+\end{align*}
+Then,
+\begin{align*}
+	x_n \rightarrow L
+\end{align*}
+
+\begin{proof}
+	Let $\varepsilon > 0$
+
+	\begin{itemize}
+		\item Since $(a_n) \rightarrow L$ then there is some $N_1$ such that for $n > N$ we have $|a_n - L| < \varepsilon$. That is,
+		      $- \varepsilon < a_n - L < \varepsilon$. Or,
+		      \begin{align*}
+			      L - \varepsilon < a_n < L + \varepsilon
+		      \end{align*}
+		\item Since $(b_n) \rightarrow L$ then there is some $N_s$ such that for $n > N$ we have $|b_n - L| < \varepsilon$. That is,
+		      $- \varepsilon < b_n - L < \varepsilon$. Or,
+		      \begin{align*}
+			      L - \varepsilon < b_n < L + \varepsilon
+		      \end{align*}
+	\end{itemize}
+
+	Now, let $N = \max\{N_1, N_2\}$ and let $n > N$. Combining $a_n \le x_n \le b_n$ and the two inequalities above gives
+	\begin{gather*}
+		L - \varepsilon < a_n \le x_n \le b_n < L + \varepsilon \\
+		L - \varepsilon       <         x_n < L + \varepsilon   \\
+		-\varepsilon          <        x_n - L < \varepsilon    \\
+		|x_n - L|             < \varepsilon
+	\end{gather*}
+
 \end{proof}
 \end{document}
