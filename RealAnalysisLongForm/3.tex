@@ -4,7 +4,7 @@
 \usepackage{amsthm}
 
 \author{Catherine Reid}
-\title{Chapter 3 notes \& solutions}
+\title{Chapter 3 notes}
 \date{}
 
 \begin{document}
@@ -227,7 +227,7 @@ Then,
 		      \begin{align*}
 			      L - \varepsilon < a_n < L + \varepsilon
 		      \end{align*}
-		\item Since $(b_n) \rightarrow L$ then there is some $N_s$ such that for $n > N$ we have $|b_n - L| < \varepsilon$. That is,
+		\item Since $(b_n) \rightarrow L$ then there is some $N_2$ such that for $n > N$ we have $|b_n - L| < \varepsilon$. That is,
 		      $- \varepsilon < b_n - L < \varepsilon$. Or,
 		      \begin{align*}
 			      L - \varepsilon < b_n < L + \varepsilon
@@ -249,31 +249,82 @@ and only if it is bounded. Moreover,
 \begin{itemize}
 	\item If $(a_n)$ is increasing, then either $(a_n)$ diverges to $\infty$ or
 	      \begin{align*}
-		      \lim_{n \rightarrow \infty} a_n = \sup\left(\left\{a_n : n \in N\right\}\right)
+		      \lim_{n \rightarrow \infty} a_n = \sup\left(\left\{a_n : n \in \mathbb{N}\right\}\right)
 	      \end{align*}
 	\item If $(a_n)$ is decreasing, then either $(a_n)$ diverges to $-\infty$ or
 	      \begin{align*}
-		      \lim_{n \rightarrow \infty} a_n = \inf\left(\left\{a_n : n \in N\right\}\right)
+		      \lim_{n \rightarrow \infty} a_n = \inf\left(\left\{a_n : n \in \mathbb{N}\right\}\right)
 	      \end{align*}
 \end{itemize}
-We will now proove the increasing case, see the exercise solutions for the decreasing case.
+We will now prove the increasing case, see the exercise solutions for the decreasing case.
 \begin{proof}
 	Assume that $(a_n)$ is monotonically increasing, and let's suppose first that $(a_n)$ is not bounded. Then for any $M > 0$
 	there exists some $N$ such that $a_N > M$. But since $(a_n)$ is monotonically increasing, for $n > N$ we have that $a_n \ge a_{N} > M$.
 	And so, by defintion, $(a_n)$ diverges to $\infty$.
 
-	Next suppose that $(a_n)$ is bounded. Then we have that $\left\{a_n : n \in N\right\}$ is a subset of $\mathbb{R}$ which is bounded above,
-	which by the completeness of $\mathbb{R}$ implies that $\sup\left\{a_n : n \in N\right\}$ exists. Call this supremum $\alpha$. We will show
+	Next suppose that $(a_n)$ is bounded. Then we have that $\left\{a_n : n \in \mathbb{N}\right\}$ is a subset of $\mathbb{R}$ which is bounded above,
+	which by the completeness of $\mathbb{R}$ implies that $\sup\left\{a_n : n \in \mathbb{N}\right\}$ exists. Call this supremum $\alpha$. We will show
 	that $\lim_{n \rightarrow \infty} a_n = \alpha$.
 
-	To show this, first let $\varepsilon > 0$. Since $\sup\left(\left\{a_n : n \in N\right\}\right) = \alpha$, there exists some
+	To show this, first let $\varepsilon > 0$. Since $\sup\left(\left\{a_n : n \in \mathbb{N}\right\}\right) = \alpha$, there exists some
 	$a_N > \alpha - \varepsilon$. And since $(a_n)$ is monotonically increasing, for any $n > N$ we have that $a_n \ge a_N > \alpha - \varepsilon$.
-	Also $a_n \le \alpha$ as $\alpha$ is the supremum of $\left\{a_n : n \in N\right\}$. And so, for $n > N$ we have $\alpha - \varepsilon < a_n \le \alpha$.
+	Also $a_n \le \alpha$ as $\alpha$ is the supremum of $\left\{a_n : n \in \mathbb{N}\right\}$. And so, for $n > N$ we have $\alpha - \varepsilon < a_n \le \alpha$.
 	This implies $\alpha - \varepsilon < a_n < \alpha + \varepsilon$, which gives
 	\begin{align*}
 		|a_n - \alpha| < \varepsilon
 	\end{align*}
 
 	So, by defintion, $(a_n)$ converges to $\alpha$, concluding the proof.
+\end{proof}
+
+\textbf{Proposition 3.29}: (Bounded $S$ contains $a_n \rightarrow \sup(S)$) Suppose $S \subseteq \mathbb{R}$ is bounded above.
+Then there exists a sequence $(a_n)$ where $a_n \in S$ for each $n$ and
+\begin{align*}
+	\lim_{n \rightarrow \infty} a_n = \sup (S)
+\end{align*}
+Likewise if $S$ is bounded below , then there exists a sequence $(b_n)$ where $b_n \in S$ for each $n$ and
+\begin{align*}
+	\lim_{n \rightarrow \infty} a_n = \inf (S)
+\end{align*}
+
+We will prove the bounded above case, for the other part of the proof, see the exercise solutions
+\begin{proof}
+	Suppose $S$ is bounded above. Then $\sup(S)$ exists. Let $\sup(S) = \alpha$. By the supremum analytically theorem,
+	for any $\varepsilon > 0$ there exists some $x \in S$ such that $x > \alpha - \varepsilon$. In particular, there exists
+	some $a_1 \in S$ such that $a_1 > \alpha - 1$, some $a_2 \in S$ such that $a_2 > \alpha - \frac{1}{2}$; and more generallly,
+	for each $n \in \mathbb{N}$, there exists some $a_n \in S$ such that $a_n > \alpha - \frac{1}{n}$.
+
+	Thus we obtain a sequence $(a_n)$ from $S$. To see that this sequence converges to $\alpha$, consider that the
+	sequence $(\frac{1}{n}) \rightarrow 0$ and $(\alpha, \alpha, \alpha, ....) \rightarrow \alpha$. So by the limit laws
+	\begin{align*}
+		\alpha - \frac{1}{n} \rightarrow \alpha - 0 = \alpha
+	\end{align*}
+
+	Now, we have the inequality
+	\begin{align*}
+		\alpha - \frac{1}{n} \le a_n \le \alpha
+	\end{align*}
+	where both the upper and lower bounds converge to $\alpha$. So by the squeeze theorem, $\lim_{n \rightarrow \infty} a_n = \alpha$
+	as required.
+\end{proof}
+
+\textbf{Proposition 3.35}: (Monotone $(a_n)$ has $a_{n_k} \rightarrow a \implies a_n \rightarrow a$) If a monotone sequence
+$(a_n)$ has a convergent subsequence, then $(a_n)$ converges too, and has the same limit.
+
+\begin{proof}
+	Assume that $(a_n)$ is monotone increasing. Let $(a_{n_k})$ be a convergent subsequence of $(a_n)$ and note that since
+	$(a_n)$ is monotone increasing, being a subsequence means that $(a_{n_k})$'s terms come from $(a_n)$ and do so in the same
+	order as they appear in $(a_n)$, meaning that $(a_{n_k})$ is also monotone increasing. Now, since $(a_{n_k})$ is both monotone and
+	convergent, by the monotone convergence theorem it converges to $\sup\left(\left\{a_{n_k}: k \in \mathbb{N}\right\}\right)$.
+
+	To show that $(a_n)$ is convergent, by using the monotone convergence theorem, we need to show that it is bounded above. To see this,
+	note that since the subsequence $(a_{n_k})$ is an infinite list of elements from $(a_n)$, any particular elements $a_n$ from
+	the sequence has an element $(a_{n_k})$ that comes after it. And since both $a_n$ and $a_{n_k}$ are terms of $(a_n)$, which is monotone
+	incresing, we have $a_n \le a_{n_k}$. So we have
+	\begin{align*}
+		a_n \le a_{n_k} \le \sup\left(\left\{a_{n_k}: k \in \mathbb{N}\right\}\right)
+	\end{align*}
+	which proves that $(a_n)$ is bounded above and therefore is convergent. Finally, by Proposition 3.32 we know that
+	$(a_n)$ must have the same limit as any of its subsequences. This complete the proof.
 \end{proof}
 \end{document}
