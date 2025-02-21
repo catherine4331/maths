@@ -6,3 +6,5 @@
 *.synctex.gz
 *fdb_latexmk
 *fls
+
+/.lake

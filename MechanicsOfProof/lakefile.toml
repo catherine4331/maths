@@ -1,0 +1,10 @@
+name = "MechanicsOfProof"
+version = "0.1.0"
+defaultTargets = ["mechanicsofproof"]
+
+[[lean_lib]]
+name = "MechanicsOfProof"
+
+[[lean_exe]]
+name = "mechanicsofproof"
+root = "Main"
