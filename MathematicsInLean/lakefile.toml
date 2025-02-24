@@ -1,0 +1,14 @@
+name = "MathematicsInLean"
+version = "0.1.0"
+defaultTargets = ["mathematicsinlean"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+
+[[lean_lib]]
+name = "MathematicsInLean"
+
+[[lean_exe]]
+name = "mathematicsinlean"
+root = "Main"
