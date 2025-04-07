@@ -1,4 +1,5 @@
 import MathematicsInLean.Common
+import Mathlib.Data.Real.Basic
 
 #check ∀ x : ℝ, 0 ≤ x → |x| = x
 
@@ -87,3 +88,40 @@ example (hfa : FnUb f a) (hgb : FnUb g b) (nng : FnLb g 0) (nna : 0 ≤ a) :
       · apply hgb
       · apply nng
       · apply nna
+
+-- Ayy look, an OrderedCancelAddCommMonoid (algebraists remain a strange bunch)
+variable {α : Type*} {R : Type*} [OrderedCancelAddCommMonoid R]
+
+#check add_le_add
+
+def FnUb' (f : α → R) (a : R) : Prop :=
+  ∀ x, f x ≤ a
+
+theorem fnUb_add {f g : α → R} {a b : R} (hfa : FnUb' f a) (hgb : FnUb' g b) :
+    FnUb' (fun x ↦ f x + g x) (a + b) := fun x ↦ add_le_add (hfa x) (hgb x)
+
+example (f : ℝ → ℝ) (h : Monotone f) : ∀ {a b}, a ≤ b → f a ≤ f b :=
+  @h
+
+
+section
+variable (f g : ℝ → ℝ)
+
+-- With short proofs, using proof terms is often clearer
+example (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f x + g x := by
+  intro a b aleb
+  dsimp
+  apply add_le_add
+  apply mf aleb
+  apply mg aleb
+
+example (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f x + g x :=
+  fun a b aleb ↦ add_le_add (mf aleb) (mg aleb)
+
+example {c : ℝ} (mf : Monotone f) (nnc : 0 ≤ c) : Monotone fun x ↦ c * f x :=
+  sorry
+
+example (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f (g x) :=
+  sorry
+
+end
