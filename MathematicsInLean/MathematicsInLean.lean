@@ -4,3 +4,5 @@ import MathematicsInLean.Introduction
 import MathematicsInLean.Basics.TheoremsAndLemmas
 import MathematicsInLean.Basics.Basics
 import MathematicsInLean.Common
+import MathematicsInLean.Apply
+import MathematicsInLean.Logic
