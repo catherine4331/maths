@@ -103,7 +103,6 @@ theorem fnUb_add {f g : α → R} {a b : R} (hfa : FnUb' f a) (hgb : FnUb' g b) 
 example (f : ℝ → ℝ) (h : Monotone f) : ∀ {a b}, a ≤ b → f a ≤ f b :=
   @h
 
-
 section
 variable (f g : ℝ → ℝ)
 
@@ -156,3 +155,39 @@ example (ef : FnEven f) (og : FnOdd g) : FnEven fun x ↦ f (g x) := by
   rw [og, ef, neg_neg]
 
 end
+
+variable {α : Type*} (r s t : Set α)
+
+example : s ⊆ s := by
+  intro x xs
+  exact xs
+
+theorem Subset.refl : s ⊆ s := fun x xs ↦ xs
+
+theorem Subset.trans : r ⊆ s → s ⊆ t → r ⊆ t := by
+  intro rsubs ssubt x xr
+  apply ssubt
+  apply rsubs
+  exact xr
+
+variable {α : Type*} [PartialOrder α]
+variable (s : Set α) (a b : α)
+
+def SetUb (s : Set α) (a : α) :=
+  ∀ x, x ∈ s → x ≤ a
+
+example (h : SetUb s a) (h' : a ≤ b) : SetUb s b := by
+  intro x xs
+  trans a
+  apply h x xs
+  apply h'
+
+open Function
+
+example (c : ℝ) : Injective fun x ↦ x + c := by
+  intro x₁ x₂ h'
+  exact (add_left_inj c).mp h'
+
+example {c : ℝ} (h : c ≠ 0) : Injective fun x ↦ c * x := by
+  intro x₁ x₂ h'
+  exact (mul_right_inj' h).mp h'
