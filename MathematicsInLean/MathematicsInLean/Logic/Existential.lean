@@ -155,3 +155,24 @@ example {c : ℝ} (h : c ≠ 0) : Surjective fun x ↦ c * x := by
   dsimp
   use y / c
   rw [mul_div_cancel₀ y h]
+
+-- field_simp is quite useful
+example (x y : ℝ) (h : x - y ≠ 0) : (x ^ 2 - y ^ 2) / (x - y) = x + y := by
+  field_simp [h]
+  ring
+
+example {f : ℝ → ℝ} (h : Surjective f) : ∃ x, f x ^ 2 = 4 := by
+  rcases h 2 with ⟨x, hx⟩
+  use x
+  rw [hx]
+  norm_num
+
+variable {α : Type*} {β : Type*} {γ : Type*}
+variable {g : β → γ} {f : α → β}
+
+example (surjg : Surjective g) (surjf : Surjective f) : Surjective fun x ↦ g (f x) := by
+  intro z
+  dsimp
+  rcases surjg z with ⟨y, rfl⟩
+  rcases surjf y with ⟨x, rfl⟩
+  use x
