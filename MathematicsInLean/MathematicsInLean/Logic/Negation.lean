@@ -153,4 +153,15 @@ example (x : ℝ) (h : ∀ ε > 0, x ≤ ε) : x ≤ 0 := by
   use x / 2
   constructor <;> linarith
 
+example (h : 0 < 0) : a > 37 := by
+  exfalso
+  apply lt_irrefl 0 h
+
+example (h : 0 < 0) : a > 37 :=
+  absurd h (lt_irrefl 0)
+
+example (h : 0 < 0) : a > 37 := by
+  have h' : ¬0 < 0 := lt_irrefl 0
+  contradiction
+
 end
