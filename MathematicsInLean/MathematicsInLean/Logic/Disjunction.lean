@@ -103,6 +103,7 @@ example {m n k : ℕ} (h : m ∣ n ∨ m ∣ k) : m ∣ n * k := by
 example {z : ℝ} (h : ∃ x y, z = x ^ 2 + y ^ 2 ∨ z = x ^ 2 + y ^ 2 + 1) : z ≥ 0 := by
   rcases h with ⟨a, b, rfl | rfl⟩ <;> linarith [sq_nonneg a, sq_nonneg b]
 
+-- Both of the following proofs work just as well in any integral domain
 example {x : ℝ} (h : x ^ 2 = 1) : x = 1 ∨ x = -1 := by
   have h₁ : x^2 - 1 = 0 := by rw [h, sub_self]
   have h₂ : (x + 1) * (x - 1) = 0 := by
@@ -116,4 +117,32 @@ example {x : ℝ} (h : x ^ 2 = 1) : x = 1 ∨ x = -1 := by
     exact eq_of_sub_eq_zero h₃
 
 example {x y : ℝ} (h : x ^ 2 = y ^ 2) : x = y ∨ x = -y := by
-  sorry
+  have h₁ : x^2 - y^2 = 0 := by rw [h, sub_self]
+  have h₂ : (x + y) * (x - y) = 0 := by
+    rw [← h₁]
+    ring
+  rcases eq_zero_or_eq_zero_of_mul_eq_zero h₂ with h₃ | h₃
+  · right
+    rw [eq_neg_iff_add_eq_zero]
+    exact h₃
+  · left
+    exact eq_of_sub_eq_zero h₃
+
+-- Let's use the excluded middle real quick
+example (P : Prop) : ¬¬P → P := by
+  intro h
+  cases em P
+  · assumption
+  · contradiction
+
+example (P Q : Prop) : P → Q ↔ ¬P ∨ Q := by
+  constructor
+  · intro h₁
+    by_cases h₂ : P
+    · exact Or.inr (h₁ h₂)
+    · exact Or.inl h₂
+  · rintro (h₁ | h₁)
+    · intro h₂
+      contradiction
+    · intro h₂
+      exact h₁
