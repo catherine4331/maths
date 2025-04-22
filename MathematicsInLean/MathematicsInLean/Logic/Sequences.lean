@@ -142,7 +142,13 @@ theorem convergesTo_unique {s : ℕ → ℝ} {a b : ℝ}
   rcases sa ε εpos with ⟨Na, hNa⟩
   rcases sb ε εpos with ⟨Nb, hNb⟩
   let N := max Na Nb
-  have absa : |s N - a| < ε := by sorry
-  have absb : |s N - b| < ε := by sorry
-  have : |a - b| < |a - b| := by sorry
+  have absa : |s N - a| < ε := hNa N (le_max_left Na Nb)
+  have absb : |s N - b| < ε := hNb N (le_max_right Na Nb)
+  have : |a - b| < |a - b| := by
+    calc
+      |a - b| = |-(s N - a) + (s N - b)| := by congr; linarith
+            _ ≤ |-(s N - a)| + |s N - b| := abs_add _ _
+            _ = |s N - a| + |s N - b| := by rw [abs_neg]
+            _ < ε + ε := add_lt_add absa absb
+            _ = |a - b| := by ring
   exact lt_irrefl _ this
