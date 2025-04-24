@@ -161,4 +161,105 @@ example : evens ∪ odds = univ := by
   apply Classical.em
 
 example : { n | Nat.Prime n } ∩ { n | n > 2 } ⊆ { n | ¬Even n } := by
-  sorry
+  intro n
+  simp
+  intro hp ng2
+  rw [Nat.odd_iff]
+  rcases Nat.Prime.eq_two_or_odd hp with l | r
+  · linarith
+  · exact r
+
+#print Prime
+
+#print Nat.Prime
+
+example (n : ℕ) : Prime n ↔ Nat.Prime n :=
+  Nat.prime_iff.symm
+
+example (n : ℕ) (h : Prime n) : Nat.Prime n := by
+  rw [Nat.prime_iff]
+  exact h
+
+example (n : ℕ) (h : Prime n) : Nat.Prime n := by
+  rwa [Nat.prime_iff]
+
+section
+
+variable (s t : Set ℕ)
+
+example (h₀ : ∀ x ∈ s, ¬Even x) (h₁ : ∀ x ∈ s, Prime x) : ∀ x ∈ s, ¬Even x ∧ Prime x := by
+  intro x xs
+  constructor
+  · apply h₀ x xs
+  apply h₁ x xs
+
+example (h : ∃ x ∈ s, ¬Even x ∧ Prime x) : ∃ x ∈ s, Prime x := by
+  rcases h with ⟨x, xs, _, prime_x⟩
+  use x, xs
+
+variable (ssubt : s ⊆ t)
+
+example (h₀ : ∀ x ∈ t, ¬Even x) (h₁ : ∀ x ∈ t, Prime x) : ∀ x ∈ s, ¬Even x ∧ Prime x := by
+  intro x xs
+  constructor
+  · exact h₀ x (ssubt xs)
+  · exact h₁ x (ssubt xs)
+
+example (h : ∃ x ∈ s, ¬Even x ∧ Prime x) : ∃ x ∈ t, Prime x := by
+  rcases h with ⟨x, xs, odd_x, prime_x⟩
+  use x, ssubt xs
+
+end
+
+-- Here we show how to handle families of sets
+section
+
+variable {α I : Type*}
+variable (A B : I → Set α)
+variable (s : Set α)
+
+open Set
+
+example : (s ∩ ⋃ i, A i) = ⋃ i, A i ∩ s := by
+  ext x
+  simp only [mem_inter_iff, mem_iUnion]
+  constructor
+  · rintro ⟨xs, ⟨i, xAi⟩⟩
+    exact ⟨i, xAi, xs⟩
+  rintro ⟨i, xAi, xs⟩
+  exact ⟨xs, ⟨i, xAi⟩⟩
+
+example : (⋂ i, A i ∩ B i) = (⋂ i, A i) ∩ ⋂ i, B i := by
+  ext x
+  simp only [mem_inter_iff, mem_iInter]
+  constructor
+  · intro h
+    constructor
+    · intro i
+      exact (h i).1
+    intro i
+    exact (h i).2
+  rintro ⟨h1, h2⟩ i
+  constructor
+  · exact h1 i
+  exact h2 i
+
+example : (s ∪ ⋂ i, A i) = ⋂ i, A i ∪ s := by
+  ext x
+  simp only [mem_union, mem_iInter]
+  constructor
+  · rintro (xs | xI)
+    · intro i
+      exact Or.inr xs
+    · intro i
+      exact Or.inl (xI i)
+  · intro h
+    by_cases xs : x ∈ s
+    · exact Or.inl xs
+    · right
+      intro i
+      cases h i
+      · assumption
+      · contradiction
+
+end
