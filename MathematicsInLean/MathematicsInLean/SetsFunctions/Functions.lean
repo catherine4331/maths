@@ -1,6 +1,8 @@
 import MathematicsInLean.Common
 import Mathlib.Data.Real.Basic
 
+section
+
 variable {α β : Type*}
 variable (f : α → β)
 variable (s t : Set α)
@@ -125,3 +127,53 @@ example : s ∪ f ⁻¹' u ⊆ f ⁻¹' (f '' s ∪ u) := by
     use x
   · right
     exact xu
+
+end
+
+section
+
+open Set Real
+
+example : InjOn log { x | x > 0 } := by
+  intro x xpos y ypos
+  intro e
+  -- log x = log y
+  calc
+    x = exp (log x) := by rw [exp_log xpos]
+    _ = exp (log y) := by rw [e]
+    _ = y := by rw [exp_log ypos]
+
+example : range exp = { y | y > 0 } := by
+  ext y; constructor
+  · rintro ⟨x, rfl⟩
+    apply exp_pos
+  intro ypos
+  use log y
+  rw [exp_log ypos]
+
+example : InjOn sqrt { x | x ≥ 0 } := by
+  intro x xpos y ypos
+  intro h
+  calc
+    x = (√x)^2 := by rw [sq_sqrt xpos]
+    _ = (√y)^2 := by rw [h]
+    _ = y := by rw [sq_sqrt ypos]
+
+example : InjOn (fun x ↦ x ^ 2) { x : ℝ | x ≥ 0 } := by
+  intro x xpos y ypos
+  dsimp
+  intro h
+  rw [← sq_eq_sq₀ xpos ypos, h]
+
+example : sqrt '' { x | x ≥ 0 } = { y | y ≥ 0 } := by
+  ext y; constructor
+  · rintro ⟨x, _, rfl⟩
+    exact sqrt_nonneg x
+  · intro ypos
+    use y^2
+    exact And.intro (sq_nonneg y) (sqrt_sq ypos)
+
+example : (range fun x ↦ x ^ 2) = { y : ℝ | y ≥ 0 } := by
+  sorry
+
+end
