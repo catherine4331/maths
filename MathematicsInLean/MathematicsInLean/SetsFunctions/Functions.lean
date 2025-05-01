@@ -174,6 +174,73 @@ example : sqrt '' { x | x ≥ 0 } = { y | y ≥ 0 } := by
     exact And.intro (sq_nonneg y) (sqrt_sq ypos)
 
 example : (range fun x ↦ x ^ 2) = { y : ℝ | y ≥ 0 } := by
-  sorry
+  ext y; constructor
+  · rintro ⟨x, rfl⟩
+    exact sq_nonneg x
+  · rintro h
+    use √y
+    exact sq_sqrt h
 
 end
+
+noncomputable section
+
+variable {α β : Type*} [Inhabited α]
+
+#check (default : α)
+
+variable (P : α → Prop) (h : ∃ x, P x)
+
+#check Classical.choose h
+
+example : P (Classical.choose h) :=
+  Classical.choose_spec h
+
+open Classical
+
+def inverse (f : α → β) : β → α := fun y : β ↦
+  if h : ∃ x, f x = y then Classical.choose h else default
+
+theorem inverse_spec {f : α → β} (y : β) (h : ∃ x, f x = y) : f (inverse f y) = y := by
+  rw [inverse, dif_pos h]
+  exact Classical.choose_spec h
+
+variable (f : α → β)
+
+open Function
+
+example : Injective f ↔ LeftInverse (inverse f) f := by
+  constructor
+  · rintro h x
+    apply h
+    apply inverse_spec
+    use x
+  · intro h x₁ x₂ e
+    rw [← h x₁, ← h x₂, e]
+
+example : Surjective f ↔ RightInverse (inverse f) f := by
+  constructor
+  · rintro h y
+    rcases h y with ⟨x, h⟩
+    apply inverse_spec
+    use x
+  · intro h y
+    use (inverse f) y
+    apply h
+
+end
+
+theorem Cantor : ∀ f : α → Set α, ¬Function.Surjective f := by
+  intro f surjf
+  let S := { i | i ∉ f i }
+  rcases surjf S with ⟨j, h⟩
+  have h₁ : j ∉ f j := by
+    intro h'
+    have : j ∉ f j := by rwa [h] at h'
+    contradiction
+  have h₂ : j ∈ S := by
+    apply h₁
+  have h₃ : j ∉ S := by
+    rw [h] at h₁
+    exact h₁
+  contradiction
