@@ -98,4 +98,32 @@ def mul : MyNat → MyNat → MyNat
   | _, zero => zero
   | x, succ y => add (mul x y) x
 
+theorem zero_add (n : MyNat) : add zero n = n := by
+  induction' n with n ih
+  · rfl
+  · rw [add, ih]
+
+theorem succ_add (m n : MyNat) : add (succ m) n = succ (add m n) := by
+  induction' n with n ih
+  · rfl
+  · rw [add, ih]
+    rfl
+
+theorem add_comm (m n : MyNat) : add m n = add n m := by
+  induction' n with n ih
+  · rw [zero_add]
+    rfl
+  · rw [add, succ_add, ih]
+
+theorem add_assoc (m n k : MyNat) : add (add m n) k = add m (add n k) := by
+  induction' n with n ih
+  · rw [zero_add]
+    rfl
+  · rw [succ_add, add, succ_add, ih, add]
+
+theorem mul_add (m n k : MyNat) : mul m (add n k) = add (mul m n) (mul m k) := by
+  induction' n with n ih
+  · rw [zero_add, mul, zero_add]
+  · rw [succ_add, mul, ih]
+
 end MyNat
