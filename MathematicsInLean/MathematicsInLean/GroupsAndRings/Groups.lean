@@ -130,4 +130,24 @@ example (φ : G →* H) (ψ : H →* K) (U : Subgroup K) :
   · rintro g_in
     apply g_in
 
+example (φ : G →* H) (ψ : H →* K) (S : Subgroup G) :
+    map (ψ.comp φ) S = map ψ (S.map φ) := by
+  ext x
+  constructor
+  · rintro ⟨s, s_in, rfl⟩
+    use φ s
+    constructor
+    · use s, s_in
+    · rfl
+  · rintro ⟨h, ⟨s, s_in, rfl⟩, rfl⟩
+    use s, s_in
+    rfl
+
 end exercises
+
+open scoped Classical
+
+example {G : Type*} [Group G] (G' : Subgroup G) : Nat.card G' ∣ Nat.card G := by
+  use G'.index
+  rw [← mul_comm G'.index _]
+  use G'.index_mul_card.symm
