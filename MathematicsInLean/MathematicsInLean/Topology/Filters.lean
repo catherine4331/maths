@@ -35,3 +35,23 @@ example : Filter ℕ :=
 
 def Tendsto₁ {X Y : Type*} (f : X → Y) (F : Filter X) (G : Filter Y) :=
   ∀ V ∈ G, f⁻¹' V ∈ F
+
+def Tendsto₂ {X Y : Type*} (f : X → Y) (F : Filter X) (G : Filter Y) :=
+  map f F ≤ G
+
+example {X Y Z : Type*} {F : Filter X} {G : Filter Y} {H : Filter Z} {f : X → Y} {g : Y → Z}
+    (hf : Tendsto₁ f F G) (hg : Tendsto₁ g G H) : Tendsto₁ (g ∘ f) F H := by
+  rintro z zh
+  apply hg at zh
+  apply hf at zh
+  apply zh
+
+variable (f : ℝ → ℝ) (x₀ y₀ : ℝ)
+#check comap ((↑) : ℚ → ℝ) (𝓝 x₀)
+#check Tendsto (f ∘ (↑)) (comap ((↑) : ℚ → ℝ) (𝓝 x₀)) (𝓝 y₀)
+
+-- Now working in ℝ2
+example : 𝓝 (x₀, y₀) = 𝓝 x₀ ×ˢ 𝓝 y₀ :=
+  nhds_prod_eq
+
+#check le_inf_iff
