@@ -1,0 +1,14 @@
+name = "RealAnalysisLongForm"
+version = "0.1.0"
+defaultTargets = ["realanalysislongform"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+
+[[lean_lib]]
+name = "RealAnalysisLongForm"
+
+[[lean_exe]]
+name = "realanalysislongform"
+root = "Main"
