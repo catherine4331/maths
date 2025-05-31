@@ -1,0 +1,14 @@
+name = "UnderstandingAnalysis"
+version = "0.1.0"
+defaultTargets = ["UnderstandingAnalysis"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+
+[[lean_lib]]
+name = "UnderstandingAnalysis"
+
+[[lean_exe]]
+name = "understandinganalysis"
+root = "Main"
