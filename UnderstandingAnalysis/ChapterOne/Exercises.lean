@@ -43,3 +43,33 @@ theorem reverse_triangle (a b : ℝ) : |(|a| - |b|)| ≤ |a - b| := by
   have neg : -|a - b| ≤ |a| - |b| := by linarith
   rw [abs_le]
   exact And.intro neg pos
+
+-- 1.2.7
+example (A B : Set ℝ) (g : ℝ → ℝ) : g '' (A ∩ B) ⊆ g '' A ∩ g '' B := by
+  rintro y ⟨x, ⟨inter, rfl⟩⟩
+  constructor
+  · use x, inter.left
+  · use x, inter.right
+
+example (A B : Set ℝ) (g : ℝ → ℝ) : g '' A ∪ g '' B = g '' (A ∪ B) := by
+  ext y
+  constructor
+  · rintro (⟨x, ⟨x_in, rfl⟩⟩ | ⟨x, ⟨x_in, rfl⟩⟩)
+    · use x
+      apply And.intro (Or.inl x_in) (by rfl)
+    · use x
+      apply And.intro (Or.inr x_in) (by rfl)
+  · rintro ⟨x, ⟨(x_in| x_in), rfl⟩⟩
+    · apply Or.inl (by use x)
+    · apply Or.inr (by use x)
+
+-- 1.2.9
+example (A B : Set ℝ) (g : ℝ → ℝ) : g ⁻¹' (A ∩ B) = g ⁻¹' A ∩ g ⁻¹' B := by
+  ext x
+  constructor
+  · rintro ⟨x_A, x_B⟩
+    exact And.intro x_A x_B
+  · rintro ⟨x_A, x_B⟩
+    exact And.intro x_A x_B
+
+example (A B : Set ℝ) (g : ℝ → ℝ) : g ⁻¹' (A ∪ B) = g ⁻¹' A ∪ g ⁻¹' B := by
