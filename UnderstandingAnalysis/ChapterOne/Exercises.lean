@@ -1,5 +1,9 @@
 import Mathlib.Tactic
 import Mathlib.Util.Delaborators
+import Mathlib.Data.Set.Basic
+import Mathlib.Data.Finset.Basic
+
+open Set Finset
 
 -- 1.2.6
 lemma aux (a b : ℝ) : (a + b)^2 ≤ (|a| + |b|)^2 := by
@@ -73,3 +77,17 @@ example (A B : Set ℝ) (g : ℝ → ℝ) : g ⁻¹' (A ∩ B) = g ⁻¹' A ∩ 
     exact And.intro x_A x_B
 
 example (A B : Set ℝ) (g : ℝ → ℝ) : g ⁻¹' (A ∪ B) = g ⁻¹' A ∪ g ⁻¹' B := by
+  ext x
+  constructor
+  · rintro (ga | gb)
+    · apply Or.inl ga
+    · apply Or.inr gb
+  · rintro (ga | gb)
+    · apply Or.inl ga
+    · apply Or.inr gb
+
+example (A : ℕ → Set α) (n : ℕ) :
+    (⋃ i ∈ Finset.range (n + 1), A i)ᶜ = ⋂ i ∈ Finset.range (n + 1), (A i)ᶜ := by
+  induction' n with n ih
+  · simp
+  · simp

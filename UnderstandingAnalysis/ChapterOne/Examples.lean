@@ -1,5 +1,6 @@
 import Mathlib.Tactic
 import Mathlib.Util.Delaborators
+import UnderstandingAnalysis.Reals
 
 open Set
 
@@ -37,3 +38,19 @@ example {α : Type*} (A B : Set α) : (A ∪ B)ᶜ = Aᶜ ∩ Bᶜ := by
     rw [mem_union]
     push_neg
     exact h₁
+
+def add_set (c : ℝ) (A : Set ℝ) : Set ℝ := {x | ∃ a ∈ A, x = c + a}
+
+example (A : Set ℝ) (c : ℝ) (h : Supremum A s) :
+    Supremum (add_set c A) (c + s) := by
+  constructor
+  · rintro x ⟨a, ⟨a_in, rfl⟩⟩
+    linarith [h.left a a_in]
+  · rintro b h₁
+    have h_upper : UpperBound A (b - c) := by
+      rintro a ha
+      have h_in_add : c + a ∈ add_set c A := ⟨a, ha, rfl⟩
+      have : c + a ≤ b := h₁ (c + a) h_in_add
+      linarith
+    have : s ≤ b - c := h.right (b - c) h_upper
+    linarith
