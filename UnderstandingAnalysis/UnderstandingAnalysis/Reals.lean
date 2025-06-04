@@ -1,6 +1,8 @@
 import Mathlib.Tactic
 import Mathlib.Util.Delaborators
 
+namespace Set
+
 def BoundedAbove (A : Set ℝ) : Prop :=
   ∃ b : ℝ, ∀ a ∈ A, a ≤ b
 
@@ -8,12 +10,12 @@ def BoundedBelow (A : Set ℝ) : Prop :=
   ∃ l : ℝ, ∀ a ∈ A, l ≤ a
 
 @[simp]
-def UpperBound (A : Set ℝ) (s : ℝ) : Prop :=
-  ∀ a ∈ A, a ≤ s
+def UpperBound (A : Set ℝ) (u : ℝ) : Prop :=
+  ∀ a ∈ A, a ≤ u
 
 @[simp]
-def LowerBound (A : Set ℝ) (i : ℝ) : Prop :=
-  ∀ a ∈ A, i ≤ a
+def LowerBound (A : Set ℝ) (l : ℝ) : Prop :=
+  ∀ a ∈ A, l ≤ a
 
 @[simp]
 def Supremum (A : Set ℝ) (s : ℝ) : Prop :=
@@ -31,8 +33,12 @@ def Maximum (A : Set ℝ) (a₀ : A) : Prop :=
 def Minimum (A : Set ℝ) (a₁ : A) : Prop :=
   ∀ a ∈ A, a₁ ≤ a
 
-lemma sup_analytic {A : Set ℝ} (h : UpperBound A s) :
-    Supremum A s ↔ ∀ ε > 0, ∃ a : A, s - ε < a := by
+end Set
+
+axiom aoc {A : Set ℝ} (hne : A.Nonempty) (hb : A.BoundedAbove) : ∃ s : ℝ, A.Supremum s
+
+lemma sup_analytic {A : Set ℝ} (h : A.UpperBound s) :
+    A.Supremum s ↔ ∀ ε > 0, ∃ a : A, s - ε < a := by
   simp
   constructor
   · rintro h ε ε_pos
@@ -49,14 +55,10 @@ lemma sup_analytic {A : Set ℝ} (h : UpperBound A s) :
       have b_lt_s : b < s := lt_of_not_le h_not_le
       obtain ⟨a, ha_mem, ha_gt⟩ := hanalytic (s - b) (by linarith)
       have : b < a := by linarith
-      -- Ask about tidying this up
-      apply lt_irrefl b
-      apply this.trans_le
-      apply b_ub
-      apply ha_mem
+      apply lt_irrefl b (this.trans_le (b_ub a ha_mem))
 
-lemma inf_analytic {A : Set ℝ} (h : LowerBound A i) :
-    Infimum A i ↔ ∀ ε > 0, ∃ a : A, a < i + ε := by
+lemma inf_analytic {A : Set ℝ} (h : A.LowerBound i) :
+    A.Infimum i ↔ ∀ ε > 0, ∃ a : A, a < i + ε := by
   simp
   constructor
   · rintro h ε ε_pos
