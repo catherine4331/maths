@@ -112,10 +112,9 @@ theorem nested_interval_principle
 theorem archimedian {x : ℝ} : ∃ n : ℕ, n > x := by
   by_contra h
   push_neg at h
-  have ne : Set.Nonempty {n : ℝ | ∃ k : ℕ, n = k} := by
-    use 0, 0
-    simp
-  have bu : Set.BoundedAbove {n : ℝ | ∃ k : ℕ, n = k} := by
+  let A : Set ℝ := {n : ℝ | ∃ k : ℕ, n = k}
+  have ne : A.Nonempty := by use 0, 0; simp
+  have bu : A.BoundedAbove := by
     use x
     intro y ⟨k, ak⟩
     rw [ak]
@@ -125,7 +124,7 @@ theorem archimedian {x : ℝ} : ∃ n : ℕ, n > x := by
   rw [sup_analytic hs.left] at hs
   obtain ⟨n, hn⟩ := hs 1 (by norm_num)
   have contra : s < n + 1 := by linarith
-  have : n + 1 ∈ {n : ℝ | ∃ k : ℕ, n = k} := by
+  have : n + 1 ∈ A := by
     obtain ⟨⟨k_nat, ak⟩, _⟩ := hn
     use k_nat + 1
     rw [ak]
@@ -133,3 +132,9 @@ theorem archimedian {x : ℝ} : ∃ n : ℕ, n > x := by
   have : n + 1 ≤ s := by
     apply s_ub (n + 1) this
   linarith
+
+theorem archimedian_corollary (y : ℝ) (y_pos : y > 0) : ∃ n : ℕ,  1 / n < y := by
+  obtain ⟨n, hn⟩ := archimedian (x := 1 / y)
+  use n
+  refine (one_div_lt y_pos ?_).mp hn
+  linarith [one_div_pos.mpr y_pos]
