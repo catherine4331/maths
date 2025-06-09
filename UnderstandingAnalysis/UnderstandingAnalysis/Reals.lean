@@ -35,10 +35,10 @@ def Minimum (A : Set ℝ) (a₁ : A) : Prop :=
 
 end Set
 
-axiom aoc {A : Set ℝ} (hne : A.Nonempty) (hb : A.BoundedAbove) : ∃ s : ℝ, A.Supremum s
+axiom aoc {A : Set ℝ} : A.Nonempty ∧ A.BoundedAbove ↔ ∃ s : ℝ, A.Supremum s
 
-lemma sup_analytic {A : Set ℝ} (h : A.UpperBound s) :
-    A.Supremum s ↔ ∀ ε > 0, ∃ a : A, s - ε < a := by
+lemma sup_analytic {A : Set ℝ} {s : ℝ} (h : A.UpperBound s) :
+    A.Supremum s ↔ ∀ ε > 0, ∃ a ∈ A, s - ε < a := by
   simp
   constructor
   · rintro h ε ε_pos
@@ -58,7 +58,7 @@ lemma sup_analytic {A : Set ℝ} (h : A.UpperBound s) :
       apply lt_irrefl b (this.trans_le (b_ub a ha_mem))
 
 lemma inf_analytic {A : Set ℝ} (h : A.LowerBound i) :
-    A.Infimum i ↔ ∀ ε > 0, ∃ a : A, a < i + ε := by
+    A.Infimum i ↔ ∀ ε > 0, ∃ a ∈ A, a < i + ε := by
   simp
   constructor
   · rintro h ε ε_pos
@@ -76,3 +76,60 @@ lemma inf_analytic {A : Set ℝ} (h : A.LowerBound i) :
       obtain ⟨a, ha_mem, ha_lt⟩ := hanalytic (l - i) (by linarith)
       have : a < l := by linarith
       apply lt_irrefl l (lt_of_le_of_lt (l_lb a ha_mem) this)
+
+theorem nested_interval_principle
+    (a b : ℕ → ℝ)
+    (h_nested : ∀ n, a (n + 1) ≥ a n ∧ b (n + 1) ≤ b n)
+    (h_order : ∀ n, a n ≤ b n)
+    (h_cross:  ∀ n m, a n ≤ b m) :
+    ∃ c, ∀ n, a n ≤ c ∧ c ≤ b n := by
+  let A : Set ℝ := {x | ∃ n : ℕ, x = a n}
+  have a_ne : A.Nonempty := ⟨a 0, 0, rfl⟩
+  have a_bu : A.BoundedAbove := by
+    use b 0
+    rintro x ⟨n, rfl⟩
+    induction' n with n ih
+    · exact h_order 0
+    · calc a (n + 1)
+        ≤ b (n + 1) := h_order (n + 1)
+        _ ≤ b n := (h_nested n).2
+        _ ≤ b 0 := by
+          clear ih
+          induction' n with k jh
+          · rfl
+          · exact le_trans (h_nested k).2 jh
+  have ⟨s, hs⟩ := aoc.mp ⟨a_ne, a_bu⟩
+  use s
+  intro n
+  constructor
+  · exact hs.left (a n) ⟨n, rfl⟩
+  · have b_ub : A.UpperBound (b n) := by
+      intro a_val ⟨k, ak⟩
+      rw [ak]
+      exact h_cross k n
+    exact hs.right (b n) b_ub
+
+theorem archimedian {x : ℝ} : ∃ n : ℕ, n > x := by
+  by_contra h
+  push_neg at h
+  have ne : Set.Nonempty {n : ℝ | ∃ k : ℕ, n = k} := by
+    use 0, 0
+    simp
+  have bu : Set.BoundedAbove {n : ℝ | ∃ k : ℕ, n = k} := by
+    use x
+    intro y ⟨k, ak⟩
+    rw [ak]
+    exact h k
+  obtain ⟨s, hs⟩ := aoc.mp ⟨ne, bu⟩
+  have s_ub := hs.left
+  rw [sup_analytic hs.left] at hs
+  obtain ⟨n, hn⟩ := hs 1 (by norm_num)
+  have contra : s < n + 1 := by linarith
+  have : n + 1 ∈ {n : ℝ | ∃ k : ℕ, n = k} := by
+    obtain ⟨⟨k_nat, ak⟩, _⟩ := hn
+    use k_nat + 1
+    rw [ak]
+    norm_num
+  have : n + 1 ≤ s := by
+    apply s_ub (n + 1) this
+  linarith

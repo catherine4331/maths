@@ -106,7 +106,7 @@ example (A : Set ℝ) (hne : A.Nonempty) (hb : A.BoundedBelow) :
     use a
     rintro b hb
     exact hb a ha
-  have ⟨s, hs⟩ := aoc B_nonempty b_bu
+  have ⟨s, hs⟩ := aoc.mp ⟨B_nonempty, b_bu⟩
   use s, s
   constructor
   · exact hs
@@ -202,7 +202,7 @@ lemma onethreesixb {A B : Set ℝ} {t u a : ℝ} (sb : B.Supremum t) (ab_ub : (a
     linarith
   exact sb.right (u - a) this
 
-lemma onethreesix (A B : Set ℝ) (sa : A.Supremum s) (sb : B.Supremum t) : (add_sets A B).Supremum (s + t) := by
+lemma onethreesix {A B : Set ℝ} (sa : A.Supremum s) (sb : B.Supremum t) : (add_sets A B).Supremum (s + t) := by
   constructor
   -- Show s + t is an upper bound for A + B
   · exact onethreesixa sa sb
@@ -214,3 +214,36 @@ lemma onethreesix (A B : Set ℝ) (sa : A.Supremum s) (sb : B.Supremum t) : (add
     linarith
   have : s ≤ (u - t) := sa.right (u - t) this
   linarith
+
+example {A B : Set ℝ} (s t : ℝ) (sa : A.Supremum s) (sb : B.Supremum t) : (add_sets A B).Supremum (s + t) := by
+  rw [sup_analytic (onethreesixa sa sb)]
+  rw [sup_analytic sa.left] at sa
+  rw [sup_analytic sb.left] at sb
+  rintro ε ε_pos
+  have ε2pos : 0 < ε / 2 := by linarith
+  rcases sa (ε / 2) ε2pos with ⟨a, ⟨ha, a_ieq⟩⟩
+  rcases sb (ε / 2) ε2pos with ⟨b, ⟨hb, b_ieq⟩⟩
+  have h_in_sum : a + b ∈ add_sets A B := ⟨a, ha, b, hb, rfl⟩
+  use (a + b), h_in_sum
+  linarith
+
+-- 1.3.7
+example {A : Set ℝ} {a : ℝ} (ha : a ∈ A) (h_ub : A.UpperBound a) : A.Supremum a := by
+  constructor
+  -- Show ab is an upper bound
+  · exact h_ub
+  -- Show ab is the least upper bound
+  · intro b b_ub
+    exact b_ub a ha
+
+-- 1.3.9
+example {A B : Set ℝ} (s t : ℝ) (sa : A.Supremum s) (sb : B.Supremum t) (a_le_b : s < t) : ∃ b ∈ B, A.UpperBound b := by
+  rw [sup_analytic sb.left] at sb
+  have ε_pos : t - s > 0 := by linarith
+  rcases sb (t - s) ε_pos with ⟨b, ⟨hb, b_ieq⟩⟩
+  simp at b_ieq
+  use b, hb
+  intro a ha
+  trans s
+  · exact sa.left a ha
+  · linarith
