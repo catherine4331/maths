@@ -309,13 +309,30 @@ example (a b : ℝ) (a_le_b: a < b) : {x | ∃ q : ℚ, x = (q : ℝ) ∧ a ≤ 
   -- Use the analytic form
   rw [sup_analytic this]
   · rintro ε ε_pos
-    obtain ⟨r, hra, hrb⟩ := q_dense_r (b - ε) b (by linarith)
+    -- We need to find a rational between b - ε and b (but be careful if b - ε < a)
+    have : max a (b - ε) < b := by
+      rw [max_lt_iff]
+      exact And.intro a_le_b (by linarith)
+    obtain ⟨r, hra, hrb⟩ := q_dense_r (max a (b - ε)) b this
+    rw [max_lt_iff] at hra
     use r
     constructor
     -- Firstly we need to show r is in our set
     · rw [mem_setOf]
       use r, rfl
-      -- I'm going to ignore showing that a ≤ r for now
-      exact And.intro (by sorry) (le_of_lt hrb)
+      exact And.intro (le_of_lt hra.left) (le_of_lt hrb)
     -- And now to show it's greater than b - ε
-    · exact hra
+    · exact hra.right
+
+-- 1.4.5
+example (a b : ℝ) (a_le_b : a < b) : ∃ t : ℝ, Irrational t ∧ a < t ∧ t < b := by
+  -- We can get a rational number using the density of Q in R
+  obtain ⟨r, hra, hrb⟩ := q_dense_r (a - √2) (b - √2) (by linarith)
+  have left : a < r + √2 := by linarith
+  have right : r + √2 < b := by linarith
+  use r + √2
+  constructor
+  -- Show that r + √2 is irrational
+  · simp
+    exact irrational_sqrt_two
+  exact And.intro left right
