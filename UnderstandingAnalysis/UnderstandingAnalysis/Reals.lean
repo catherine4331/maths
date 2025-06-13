@@ -139,5 +139,5 @@ theorem archimedian_corollary (y : ℝ) (y_pos : y > 0) : ∃ n : ℕ,  1 / n < 
   refine (one_div_lt y_pos ?_).mp hn
   linarith [one_div_pos.mpr y_pos]
 
-theorem q_dense_r (a b : ℝ) : ∃ r : ℚ, a < r ∧ r < b := by
+theorem q_dense_r (a b : ℝ) (a_le_b : a < b) : ∃ r : ℚ, a < r ∧ r < b := by
   sorry

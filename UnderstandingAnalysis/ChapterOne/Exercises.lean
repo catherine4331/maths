@@ -298,3 +298,24 @@ example : ⋂ n : ℕ, Set.Ioo (0 : ℝ) (1/n) = ∅ := by
   · intro h
     exfalso
     exact h
+
+-- 1.4.4
+-- The set we're working with is ℚ ∩ [a, b], this definition is equivalent
+example (a b : ℝ) (a_le_b: a < b) : {x | ∃ q : ℚ, x = (q : ℝ) ∧ a ≤ x ∧ x ≤ b}.Supremum b := by
+  -- Firstly show b is an upper bound
+  have : {x | ∃ q : ℚ, x = (q : ℝ) ∧ a ≤ x ∧ x ≤ b}.UpperBound b := by
+    rintro c ⟨_, hq, ⟨ha, hb⟩⟩
+    exact hb
+  -- Use the analytic form
+  rw [sup_analytic this]
+  · rintro ε ε_pos
+    obtain ⟨r, hra, hrb⟩ := q_dense_r (b - ε) b (by linarith)
+    use r
+    constructor
+    -- Firstly we need to show r is in our set
+    · rw [mem_setOf]
+      use r, rfl
+      -- I'm going to ignore showing that a ≤ r for now
+      exact And.intro (by sorry) (le_of_lt hrb)
+    -- And now to show it's greater than b - ε
+    · exact hra
