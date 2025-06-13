@@ -2,7 +2,7 @@ import Mathlib.Tactic
 import Mathlib.Util.Delaborators
 import Mathlib.Data.Set.Basic
 import Mathlib.Data.Finset.Basic
-import UnderstandingAnalysis.Reals
+import UnderstandingAnalysis
 
 open Set Finset
 
