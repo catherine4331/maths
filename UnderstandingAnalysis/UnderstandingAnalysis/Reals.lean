@@ -52,7 +52,7 @@ lemma sup_analytic {A : Set ℝ} {s : ℝ} (h : A.UpperBound s) :
     · exact h
     · rintro b b_ub
       by_contra h_not_le
-      have b_lt_s : b < s := lt_of_not_le h_not_le
+      have b_lt_s : b < s := lt_of_not_ge h_not_le
       obtain ⟨a, ha_mem, ha_gt⟩ := hanalytic (s - b) (by linarith)
       have : b < a := by linarith
       apply lt_irrefl b (this.trans_le (b_ub a ha_mem))
@@ -138,3 +138,6 @@ theorem archimedian_corollary (y : ℝ) (y_pos : y > 0) : ∃ n : ℕ,  1 / n < 
   use n
   refine (one_div_lt y_pos ?_).mp hn
   linarith [one_div_pos.mpr y_pos]
+
+theorem q_dense_r (a b : ℝ) : ∃ r : ℚ, a < r ∧ r < b := by
+  sorry

@@ -247,3 +247,35 @@ example {A B : Set ℝ} (s t : ℝ) (sa : A.Supremum s) (sb : B.Supremum t) (a_l
   trans s
   · exact sa.left a ha
   · linarith
+
+-- 1.4.2
+example {A : Set ℝ} {s : ℝ} (h_ub : ∀ n : ℕ, A.UpperBound (s + 1 / n))
+    (h_nub : ∀ n : ℕ, ¬ A.UpperBound (s - 1 / n)) : A.Supremum s := by
+  have : A.UpperBound s := by
+    -- Contradiction implies there is some a such that s < a
+    by_contra h_contra
+    simp only [UpperBound] at h_contra
+    push_neg at h_contra
+    obtain ⟨a, ⟨ha, sa⟩⟩ := h_contra
+    -- But this means we can find an n such that 1 / n < a - s
+    have : a - s > 0 := by linarith
+    obtain ⟨n, hn⟩ := archimedian_corollary (a - s) this
+    have contra : s + 1 / n < a := by linarith
+    -- However, since s + 1 / n is an upper bound, a ≤ s + 1 / n
+    have := by exact h_ub n
+    have := this a ha
+    -- This implies s + 1 \ n < s + 1 \ n, which is our contradiction
+    apply lt_irrefl (s + 1 / n) (lt_of_lt_of_le contra this)
+  -- Now we've show s is an upper bound, we can use the analytic form of the supremem theorem
+  rw [sup_analytic this]
+  rintro ε hε
+  obtain ⟨n, hn⟩ := archimedian_corollary ε hε
+  have : ¬ A.UpperBound (s - 1 / n) := h_nub n
+  simp only [UpperBound] at this
+  push_neg at this
+  -- Since s - 1 / n is not an upper bound, we can find an a such that s - 1 / n < a
+  obtain ⟨a, ⟨ha, sa⟩⟩ := this
+  use a, ha
+  calc
+    s - ε < s - 1 / n := by linarith
+        _ < a := by exact sa
