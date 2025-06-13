@@ -279,3 +279,22 @@ example {A : Set ℝ} {s : ℝ} (h_ub : ∀ n : ℕ, A.UpperBound (s + 1 / n))
   calc
     s - ε < s - 1 / n := by linarith
         _ < a := by exact sa
+
+-- 1.4.3
+example : ⋂ n : ℕ, Set.Ioo (0 : ℝ) (1/n) = ∅ := by
+  ext x
+  constructor
+  · intro hx
+    rw [mem_iInter] at hx
+    have : x > 0 := by
+      have := hx 1
+      exact this.left
+    -- Since x > 0 for all x, we can always find some 1 / n < x
+    obtain ⟨n, hn⟩ := archimedian_corollary x this
+    -- Which means that x is not in (0, 1/n)
+    have : x ∉ Ioo (0 : ℝ) (1/n) := by
+      exact notMem_Ioo_of_ge (le_of_lt hn)
+    exact this (hx n)
+  · intro h
+    exfalso
+    exact h
