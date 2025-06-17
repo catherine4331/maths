@@ -123,7 +123,7 @@ theorem const_convergent {c : ℝ} : (fun _ ↦ c).ConvergesTo c := by
 
 section
 
-variable {sa sb : ℕ → ℝ} {a b : ℝ}
+variable {sa sb sc : ℕ → ℝ} {a b c: ℝ}
 
 
 theorem algebraic_limit_mul_const (c : ℝ) (cs : sa.ConvergesTo a) :
@@ -237,8 +237,7 @@ theorem order_limit_nonneg (csa : sa.ConvergesTo a) (a_pos: ∀ n, sa n ≥ 0) :
   have : sa N < 0 := by linarith
   exact absurd (a_pos N) (not_le_of_gt this)
 
-theorem order_limit_le (csa : sa.ConvergesTo a) (csb : sb.ConvergesTo b) (a_le_b : ∀ n, sa n ≤ sb n) :
-    a ≤ b := by
+theorem order_limit_le (csa : sa.ConvergesTo a) (csb : sb.ConvergesTo b) (a_le_b : ∀ n, sa n ≤ sb n) : a ≤ b := by
   have b_sub_a_conv : (fun n ↦ sb n - sa n).ConvergesTo (b - a) := by apply algebraic_limit_sum csb (algebraic_limit_neg csa)
   have b_sub_a_pos : ∀ n : ℕ, sb n - sa n ≥ 0 := by intro n; linarith [a_le_b n]
   have : (b - a) ≥ 0 := by apply order_limit_nonneg b_sub_a_conv b_sub_a_pos
@@ -250,4 +249,23 @@ theorem order_limit_const_le {c : ℝ} (csa : sa.ConvergesTo a) (hc : ∀ n, sa 
 theorem order_limit_const_ge {c : ℝ} (csa : sa.ConvergesTo a) (hc : ∀ n, c ≤ sa n) : c ≤ a :=
   order_limit_le const_convergent csa hc
 
+theorem seq_squeeze {l : ℝ} (csa : sa.ConvergesTo a) (csc : sc.ConvergesTo c) (a_l : a = l) (c_l : c = l) (a_le_b : ∀ n, sa n ≤ sb n)
+    (b_le_c : ∀ n, sb n ≤ sc n) : sb.ConvergesTo l := by
+  rw [a_l] at csa
+  rw [c_l] at csc
+  intro ε ε_pos
+  obtain ⟨Na, hNa⟩ := csa ε ε_pos
+  obtain ⟨Nb, hNb⟩ := csc ε ε_pos
+  use max Na Nb
+  intro n hn
+  rw [abs_lt]
+  constructor
+  -- Firstly we use sa to constrain sb from below
+  · calc
+    -ε < sa n - l := by exact (abs_lt.mp (hNa n (le_of_max_le_left hn))).left
+     _ ≤ sb n - l := tsub_le_tsub_right (a_le_b n) l
+  -- Now we use sc to constrain sb from above
+  · calc
+    sb n - l ≤ sc n - l := by exact tsub_le_tsub_right (b_le_c n) l
+           _ < ε := by exact (abs_lt.mp (hNb n (le_of_max_le_right hn))).right
 end
