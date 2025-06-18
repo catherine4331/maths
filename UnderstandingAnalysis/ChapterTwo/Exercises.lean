@@ -41,6 +41,41 @@ example (csa : sa.ConvergesTo a) (csb : sb.ConvergesTo b) (a_sub_b_conv : (fun n
   rw [sub_eq_zero] at this
   exact this
 
-e
+example (csa : sa.ConvergesTo a) : (fun n ↦ |sa n|).ConvergesTo |a| := by
+  intro ε ε_pos
+  obtain ⟨N, hN⟩ := csa ε ε_pos
+  use N
+  intro n hn
+  simp
+  calc
+    |(|sa n| - |a|)| ≤ |sa n - a| := by exact  abs_abs_sub_abs_le (sa n) a
+                   _ < ε := hN n hn
+
+example (csa : sa.ConvergesTo a) (b_sub_a_conv : (fun n ↦ sb n - sa n).ConvergesTo 0) : sb.ConvergesTo a := by
+  intro ε ε_pos
+  obtain ⟨Na, hNa⟩ := csa (ε / 2) (by linarith)
+  obtain ⟨Nba, hNba⟩ := b_sub_a_conv (ε / 2) (by linarith)
+  simp at hNba
+  use max Na Nba
+  intro n hn
+  calc
+    |sb n - a| = |(sb n - sa n) + (sa n - a)| := by ring_nf
+             _ ≤ |sb n - sa n| + |sa n - a| := abs_add (sb n - sa n) (sa n - a)
+             _ < ε / 2 + ε / 2 := add_lt_add (hNba n (le_of_max_le_right hn)) (hNa n (le_of_max_le_left hn))
+             _ = ε := by ring_nf
+
+example (csa : sa.ConvergesTo 0) (h_sb : ∀ n, |sb n - b| ≤ sa n) : sb.ConvergesTo b := by
+  intro ε ε_pos
+  obtain ⟨N, hN⟩ := csa ε ε_pos
+  simp at hN
+  use N
+  intro n hn
+  obtain ⟨sal, sar⟩ := abs_lt.mp (hN n hn)
+  obtain ⟨bl, br⟩ := abs_le.mp (h_sb n)
+  apply abs_lt.mpr
+  constructor
+  · apply neg_lt_neg at sar
+    apply lt_of_lt_of_le sar bl
+  · exact lt_of_le_of_lt br sar
 
 end
