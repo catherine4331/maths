@@ -148,7 +148,7 @@ theorem algebraic_limit_mul_const (c : ℝ) (cs : sa.ConvergesTo a) :
                       _ = ε := by rw [mul_comm, (mul_div_cancel₀ ε (abs_ne_zero.mpr h))]
 
 -- This lemma is quite probably not needed, we might figure out how to remove it later
-lemma algebraic_limit_neg {sa : ℕ → ℝ} {a : ℝ} (csa : sa.ConvergesTo a) :
+lemma algebraic_limit_neg (csa : sa.ConvergesTo a) :
     (fun n ↦ -sa n).ConvergesTo (-a) := by
   intro ε ε_pos
   obtain ⟨N, hN⟩ := csa ε ε_pos
@@ -160,7 +160,7 @@ lemma algebraic_limit_neg {sa : ℕ → ℝ} {a : ℝ} (csa : sa.ConvergesTo a) 
               _ = |sa n - a| := abs_neg (sa n - a)
               _ < ε := hN n hn
 
-theorem algebraic_limit_sum {sa sb : ℕ → ℝ} {a b : ℝ} (csa : sa.ConvergesTo a) (csb : sb.ConvergesTo b) :
+theorem algebraic_limit_sum (csa : sa.ConvergesTo a) (csb : sb.ConvergesTo b) :
     (fun n ↦ sa n + sb n).ConvergesTo (a + b) := by
   intro ε ε_pos
   have ε2_pos : ε / 2 > 0 := by linarith
@@ -175,33 +175,67 @@ theorem algebraic_limit_sum {sa sb : ℕ → ℝ} {a b : ℝ} (csa : sa.Converge
                           _ < ε / 2 + ε / 2 := add_lt_add (hNa n (le_of_max_le_left hn)) (hNb n (le_of_max_le_right hn))
                           _ = ε := by ring
 
--- Removing a > 0 is a exercise, we'll get to that
-theorem algebraic_limit_mul (a_pos : a > 0) (csa : sa.ConvergesTo a) (csb : sb.ConvergesTo b) :
-    (fun n ↦ sa n * sb n).ConvergesTo (a * b) := by
+-- Needed to remove the a > 0 restriction in algebraic_limit_mul
+--- 2.3.9
+lemma bounded_mul_zero_conv (bsa : sa.Bounded) (csb : sb.ConvergesTo 0) :
+    (fun n ↦ sa n * sb n).ConvergesTo 0 := by
   intro ε ε_pos
-  -- Firstly, since sb is bounded, it has a max value. We'll need this
-  have b_conv : sb.Convergent := by use b
-  obtain ⟨M, ⟨M_pos, hM⟩⟩ := convergent_sequence_bounded b_conv
-  have εa_pos : 1 / M * (ε / 2) > 0 := mul_pos (one_div_pos.mpr M_pos) (by linarith)
-  -- Let's get the other ε we'll use
-  have εb_pos : 1 / |a| * (ε / 2) > 0 := mul_pos (one_div_pos.mpr (abs_pos_of_pos a_pos)) (by linarith)
-  obtain ⟨Na, hNa⟩ := csa (1 / M * (ε / 2)) εa_pos
-  obtain ⟨Nb, hNb⟩ := csb (1 / |a| * (ε / 2)) εb_pos
-  use max Na Nb
+  -- First we need the bound of sa
+  obtain ⟨M, ⟨M_pos, hM⟩⟩ := bsa
+  -- The ε we want is ε / M
+  have ε₀_pos : ε / M > 0 := div_pos ε_pos M_pos
+  obtain ⟨N, hN⟩ := csb (ε / M) ε₀_pos
+  use N
   intro n hn
-  have t := hM n
-  calc
-    |sa n * sb n - (a * b)| = |(sa n * sb n - a * sb n) + (a * sb n - a * b)| := by ring_nf
-                          _ ≤ |sa n * sb n - a * sb n| + |a * sb n - a * b| := abs_add (sa n * sb n - a * sb n) (a * sb n - a * b)
-                          _ = |sb n| * |sa n - a| + |a| * |sb n - b| := by rw [← mul_sub_right_distrib, ← mul_sub_left_distrib, abs_mul, mul_comm, abs_mul]
-                          _ ≤ M * |sa n - a| + |a| * |sb n - b| := by apply add_le_add_right; apply mul_le_mul_of_nonneg_right t (abs_nonneg (sa n - a))
-                          _ < M * (1 / M * (ε / 2)) + |a| * (1 / |a| * (ε / 2)) := by
-                            apply add_lt_add
-                            apply (mul_lt_mul_left M_pos).mpr
-                            apply (hNa n (le_of_max_le_left hn))
-                            apply (mul_lt_mul_left (abs_pos_of_pos a_pos)).mpr
-                            apply (hNb n (le_of_max_le_right hn))
-                          _ = ε := by sorry
+  simp
+  by_cases h₀ : sa n = 0
+  · rw [h₀]; simp; exact ε_pos
+  · push_neg at h₀
+    calc
+    |sa n * sb n| = |sa n| * |sb n| := by exact abs_mul (sa n) (sb n)
+                _ = |sa n| * |sb n - 0| := by ring_nf
+                _ < |sa n| * (ε / M) := (mul_lt_mul_left (abs_pos.mpr h₀)).mpr (hN n hn)
+                _ ≤ M * (ε / M) := by apply mul_le_mul_of_nonneg_right (hM n) (le_of_lt ε₀_pos)
+                _ = ε := by rw [mul_div_cancel₀ ε (ne_of_gt M_pos)]
+
+lemma algebraic_limit_mul_a_zero (a_zero : a = 0) (csa : sa.ConvergesTo a) (csb : sb.ConvergesTo b) :
+    (fun n ↦ sa n * sb n).ConvergesTo (a * b) := by
+  rw [a_zero, zero_mul]
+  rw [a_zero] at csa
+  have : (fun n ↦ sa n * sb n) = (fun n ↦ sb n * sa n) := by ext; rw [mul_comm]
+  rw [this]
+  have : sb.Convergent := by use b
+  apply bounded_mul_zero_conv (convergent_sequence_bounded (by use b)) csa
+
+theorem algebraic_limit_mul (csa : sa.ConvergesTo a) (csb : sb.ConvergesTo b) :
+    (fun n ↦ sa n * sb n).ConvergesTo (a * b) := by
+  by_cases ha : a = 0
+  · exact algebraic_limit_mul_a_zero ha csa csb
+  · intro ε ε_pos
+    -- Firstly, since sb is bounded, it has a max value. We'll need this
+    have b_conv : sb.Convergent := by use b
+    obtain ⟨M, ⟨M_pos, hM⟩⟩ := convergent_sequence_bounded b_conv
+    have εa_pos : 1 / M * (ε / 2) > 0 := mul_pos (one_div_pos.mpr M_pos) (by linarith)
+    -- Let's get the other ε we'll use
+    have εb_pos : 1 / |a| * (ε / 2) > 0 := mul_pos (one_div_pos.mpr (abs_pos.mpr ha)) (by linarith)
+    obtain ⟨Na, hNa⟩ := csa (1 / M * (ε / 2)) εa_pos
+    obtain ⟨Nb, hNb⟩ := csb (1 / |a| * (ε / 2)) εb_pos
+    use max Na Nb
+    intro n hn
+    have t := hM n
+    calc
+      |sa n * sb n - (a * b)| = |(sa n * sb n - a * sb n) + (a * sb n - a * b)| := by ring_nf
+                            _ ≤ |sa n * sb n - a * sb n| + |a * sb n - a * b| := abs_add (sa n * sb n - a * sb n) (a * sb n - a * b)
+                            _ = |sb n| * |sa n - a| + |a| * |sb n - b| := by rw [← mul_sub_right_distrib, ← mul_sub_left_distrib, abs_mul, mul_comm, abs_mul]
+                            _ ≤ M * |sa n - a| + |a| * |sb n - b| := by apply add_le_add_right; apply mul_le_mul_of_nonneg_right t (abs_nonneg (sa n - a))
+                            _ < M * (1 / M * (ε / 2)) + |a| * (1 / |a| * (ε / 2)) := by
+                              apply add_lt_add
+                              apply (mul_lt_mul_left M_pos).mpr
+                              apply (hNa n (le_of_max_le_left hn))
+                              apply (mul_lt_mul_left (abs_pos.mpr ha)).mpr
+                              apply (hNb n (le_of_max_le_right hn))
+                            _ = ε := by sorry
+
 
 -- Might finish this one off later, it's kinda a pain with calc terms
 lemma algebraic_limit_inv (a_ne_zero : a ≠ 0) (csa : sa.ConvergesTo a) :
@@ -215,11 +249,12 @@ lemma algebraic_limit_inv (a_ne_zero : a ≠ 0) (csa : sa.ConvergesTo a) :
   use max N₁ N₂
   intro n hn
   have : |sa n| > |a| / 2 := by sorry
+  sorry
 
-theorem algebraic_limit_div (a_pos : a > 0) (b_ne_zero : b ≠ 0) (csa : sa.ConvergesTo a) (csb : sb.ConvergesTo b) :
+theorem algebraic_limit_div (b_ne_zero : b ≠ 0) (csa : sa.ConvergesTo a) (csb : sb.ConvergesTo b) :
     (fun n ↦ sa n / sb n).ConvergesTo (a / b) := by
   have : (fun n ↦ 1 / sb n).ConvergesTo (1 / b) := algebraic_limit_inv b_ne_zero csb
-  apply algebraic_limit_mul a_pos csa
+  apply algebraic_limit_mul csa
   have inv_b : 1 / b = b⁻¹ := by ring
   have inv_sb :  (fun n => 1 / sb n) = (fun n => (sb n)⁻¹) := by ring_nf
   rw [← inv_b, ← inv_sb]
@@ -243,10 +278,10 @@ theorem order_limit_le (csa : sa.ConvergesTo a) (csb : sb.ConvergesTo b) (a_le_b
   have : (b - a) ≥ 0 := by apply order_limit_nonneg b_sub_a_conv b_sub_a_pos
   linarith
 
-theorem order_limit_const_le {c : ℝ} (csa : sa.ConvergesTo a) (hc : ∀ n, sa n ≤ c) : a ≤ c :=
+theorem order_limit_const_le (csa : sa.ConvergesTo a) (hc : ∀ n, sa n ≤ c) : a ≤ c :=
   order_limit_le csa const_convergent hc
 
-theorem order_limit_const_ge {c : ℝ} (csa : sa.ConvergesTo a) (hc : ∀ n, c ≤ sa n) : c ≤ a :=
+theorem order_limit_const_ge (csa : sa.ConvergesTo a) (hc : ∀ n, c ≤ sa n) : c ≤ a :=
   order_limit_le const_convergent csa hc
 
 theorem seq_squeeze {l : ℝ} (csa : sa.ConvergesTo a) (csc : sc.ConvergesTo c) (a_l : a = l) (c_l : c = l) (a_le_b : ∀ n, sa n ≤ sb n)
