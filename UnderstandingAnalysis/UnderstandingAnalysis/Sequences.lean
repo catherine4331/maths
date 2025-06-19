@@ -30,11 +30,11 @@ def ConvergesToTopological (s : ℕ → ℝ) (a : ℝ) :=
 
 @[simp]
 def Increasing (s : ℕ → ℝ) :=
-  ∀ n : ℕ, s n ≤ s (n + 1)
+  ∀ n₁ n₂ : ℕ, n₁ ≤ n₂ → s n₁ ≤ s n₂
 
 @[simp]
 def Decreasing (s : ℕ → ℝ) :=
-  ∀ n : ℕ, s n ≥ s (n + 1)
+  ∀ n₁ n₂ : ℕ, n₁ ≤ n₂ → s n₁ ≥ s n₂
 
 @[simp]
 def Monotone (s : ℕ → ℝ) :=
@@ -316,7 +316,7 @@ theorem seq_squeeze {l : ℝ} (csa : sa.ConvergesTo a) (csc : sc.ConvergesTo c) 
     sb n - l ≤ sc n - l := by exact tsub_le_tsub_right (b_le_c n) l
            _ < ε := by exact (abs_lt.mp (hNb n (le_of_max_le_right hn))).right
 
-theorem monotone_convergence (msa : sa.Monotone) (bsa : sa.Bounded) : sa.Convergent := by
+theorem monotone_convergence_increasing (isa : sa.Increasing) (bsa : sa.Bounded) : sa.Convergent := by
   let A := {a : ℝ | ∃ n : ℕ, a = sa n}
   obtain ⟨M, ⟨M_pos, hM⟩⟩ := bsa
   have ab : A.BoundedAbove := by
@@ -339,7 +339,9 @@ theorem monotone_convergence (msa : sa.Monotone) (bsa : sa.Bounded) : sa.Converg
   intro n hn
   apply abs_lt.mpr
   constructor
-  · apply?
+  · have := isa N n hn
+    linarith
   · have := ab (sa n) ⟨n, rfl⟩
     linarith
+
 end

@@ -59,7 +59,7 @@ lemma sup_analytic {A : Set ℝ} {s : ℝ} (h : A.UpperBound s) :
       have : b < a := by linarith
       apply lt_irrefl b (this.trans_le (b_ub a ha_mem))
 
-lemma inf_analytic {A : Set ℝ} (h : A.LowerBound i) :
+lemma inf_analytic {A : Set ℝ} {i : ℝ} (h : A.LowerBound i) :
     A.Infimum i ↔ ∀ ε > 0, ∃ a ∈ A, a < i + ε := by
   simp
   constructor
