@@ -78,4 +78,15 @@ example (csa : sa.ConvergesTo 0) (h_sb : ∀ n, |sb n - b| ≤ sa n) : sb.Conver
     apply lt_of_lt_of_le sar bl
   · exact lt_of_le_of_lt br sar
 
+-- 2.3.11
+example {B : Set ℝ} (csa : sa.ConvergesTo a) (aub : ∀ n, B.UpperBound (sa n)) : B.UpperBound a := by
+  simp
+  by_contra! h_contra
+  obtain ⟨b, ⟨hb, a_le_b⟩⟩ := h_contra
+  obtain ⟨N, hN⟩ := csa (b - a) (by linarith)
+  have hub : b ≤ sa N := aub N b hb
+  have := hN N (by linarith)
+  obtain ⟨_, l⟩ := abs_lt.mp this
+  rw [sub_lt_sub_iff_right] at l
+  apply lt_irrefl b (lt_of_le_of_lt hub l)
 end

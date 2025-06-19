@@ -1,5 +1,6 @@
 import Mathlib.Tactic
 import Mathlib.Util.Delaborators
+import UnderstandingAnalysis.Reals
 
 namespace Function
 
@@ -26,6 +27,18 @@ def εNeighbourhood (a ε : ℝ) :=
 @[simp]
 def ConvergesToTopological (s : ℕ → ℝ) (a : ℝ) :=
   ∀ ε > 0, ∃ N, ∀ n ≥ N, s n ∈ εNeighbourhood a ε
+
+@[simp]
+def Increasing (s : ℕ → ℝ) :=
+  ∀ n : ℕ, s n ≤ s (n + 1)
+
+@[simp]
+def Decreasing (s : ℕ → ℝ) :=
+  ∀ n : ℕ, s n ≥ s (n + 1)
+
+@[simp]
+def Monotone (s : ℕ → ℝ) :=
+  s.Increasing ∨ s.Decreasing
 
 end Function
 
@@ -236,7 +249,6 @@ theorem algebraic_limit_mul (csa : sa.ConvergesTo a) (csb : sb.ConvergesTo b) :
                               apply (hNb n (le_of_max_le_right hn))
                             _ = ε := by sorry
 
-
 -- Might finish this one off later, it's kinda a pain with calc terms
 lemma algebraic_limit_inv (a_ne_zero : a ≠ 0) (csa : sa.ConvergesTo a) :
     (fun n ↦ 1 / sa n).ConvergesTo (1 / a) := by
@@ -303,4 +315,31 @@ theorem seq_squeeze {l : ℝ} (csa : sa.ConvergesTo a) (csc : sc.ConvergesTo c) 
   · calc
     sb n - l ≤ sc n - l := by exact tsub_le_tsub_right (b_le_c n) l
            _ < ε := by exact (abs_lt.mp (hNb n (le_of_max_le_right hn))).right
+
+theorem monotone_convergence (msa : sa.Monotone) (bsa : sa.Bounded) : sa.Convergent := by
+  let A := {a : ℝ | ∃ n : ℕ, a = sa n}
+  obtain ⟨M, ⟨M_pos, hM⟩⟩ := bsa
+  have ab : A.BoundedAbove := by
+    use M
+    intro a ha
+    obtain ⟨n, rfl⟩ := Set.mem_setOf.mp ha
+    exact le_of_max_le_left (hM n)
+  have ane : A.Nonempty := by use sa 0, 0
+  obtain ⟨a, ha⟩ := aoc.mp ⟨ane, ab⟩
+  clear ane ab hM M M_pos
+  -- It seems likely that a is the limit we're looking for
+  use a
+  intro ε ε_pos
+  -- We can use the fact that a is the supremum to find an element of sa that's close enough
+  have ab := ha.left
+  rw [sup_analytic ha.left] at ha
+  obtain ⟨aN, ⟨haN, aN_ε⟩⟩ := ha ε ε_pos
+  obtain ⟨N, rfl⟩ := Set.mem_setOf.mp haN
+  use N
+  intro n hn
+  apply abs_lt.mpr
+  constructor
+  · apply?
+  · have := ab (sa n) ⟨n, rfl⟩
+    linarith
 end

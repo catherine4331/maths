@@ -3,12 +3,6 @@ import Mathlib.Util.Delaborators
 
 namespace Set
 
-def BoundedAbove (A : Set ℝ) : Prop :=
-  ∃ b : ℝ, ∀ a ∈ A, a ≤ b
-
-def BoundedBelow (A : Set ℝ) : Prop :=
-  ∃ l : ℝ, ∀ a ∈ A, l ≤ a
-
 @[simp]
 def UpperBound (A : Set ℝ) (u : ℝ) : Prop :=
   ∀ a ∈ A, a ≤ u
@@ -16,6 +10,14 @@ def UpperBound (A : Set ℝ) (u : ℝ) : Prop :=
 @[simp]
 def LowerBound (A : Set ℝ) (l : ℝ) : Prop :=
   ∀ a ∈ A, l ≤ a
+
+@[simp]
+def BoundedAbove (A : Set ℝ) : Prop :=
+  ∃ b : ℝ, A.UpperBound b
+
+@[simp]
+def BoundedBelow (A : Set ℝ) : Prop :=
+  ∃ l : ℝ, A.LowerBound l
 
 @[simp]
 def Supremum (A : Set ℝ) (s : ℝ) : Prop :=
