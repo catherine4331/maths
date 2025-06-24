@@ -124,3 +124,21 @@ example {x : ℝ} (x_pos : x > 0) : ∃ n : ℕ, n > x := by
       rw [@Nat.cast_one]
     linarith
   apply lt_irrefl (N : ℝ) (lt_trans l r)
+
+example {sa sb : ℕ → ℝ}
+    (h_nested : ∀ n, sa (n + 1) ≥ sa n ∧ sb (n + 1) ≤ sb n)
+    (h_order : ∀ n, sa n ≤ sb n) :
+    ∃ c, ∀ n, sa n ≤ c ∧ c ≤ sb n := by
+  -- Firstly we need to show a & b are bounded and monotone
+  have bsa : sa.Bounded := by sorry
+  have isa : sa.Increasing₁ := by
+    intro n
+    exact (h_nested n).left
+  have bsb : sb.Bounded := by sorry
+  have dsb : sb.Decreasing₁ := by
+    intro n
+    exact (h_nested n).right
+  obtain ⟨a, ha⟩ := monotone_convergence_increasing isa bsa
+  obtain ⟨b, hb⟩ := monotone_convergence_decreasing dsb bsb
+  have a_le_b := by apply order_limit_le ha hb h_order
+  -- We need to show that ∀ n, sa n < a. This is kinda beating around the bush but we can't assume the existence of the sup
