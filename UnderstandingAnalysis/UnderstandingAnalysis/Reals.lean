@@ -112,8 +112,7 @@ theorem nested_interval_principle
     exact hs.right (b n) b_ub
 
 theorem archimedian {x : ℝ} : ∃ n : ℕ, n > x := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   let A : Set ℝ := {n : ℝ | ∃ k : ℕ, n = k}
   have ne : A.Nonempty := by use 0, 0; simp
   have bu : A.BoundedAbove := by

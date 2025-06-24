@@ -90,3 +90,29 @@ example {B : Set ℝ} (csa : sa.ConvergesTo a) (aub : ∀ n, B.UpperBound (sa n)
   rw [sub_lt_sub_iff_right] at l
   apply lt_irrefl b (lt_of_le_of_lt hub l)
 end
+
+-- 2.4.4
+example {x : ℝ} (x_pos : x > 0) : ∃ n : ℕ, n > x := by
+  by_contra! h_contra
+  -- We will consider the sequence of the natural numbers
+  let sa : ℕ → ℝ := fun n ↦ n
+  have bsa : sa.Bounded := by
+    use x, x_pos
+    intro n
+    have : sa n ≤ x := by
+      apply h_contra n
+    sorry
+  have isa : sa.Increasing := by
+    intro n₁ n₁ hn
+    sorry
+  obtain ⟨a, ha⟩ := monotone_convergence_increasing isa bsa
+  obtain ⟨N, hN⟩ := ha (1 / 2) (by linarith)
+  -- Now, we will obtain our contradiction by using subsequent terms from our sequence
+  have := hN N (by rfl)
+  obtain ⟨r, _⟩ := abs_lt.mp this
+  have r : a - (1 / 2) < N := by linarith
+  have := hN (N + 1) (by linarith)
+  obtain ⟨_, l⟩ := abs_lt.mp this
+  have l : N < a - (1 / 2) := by sorry
+  apply lt_irrefl N
+  sorry

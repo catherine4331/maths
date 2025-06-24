@@ -32,6 +32,9 @@ def ConvergesToTopological (s : ℕ → ℝ) (a : ℝ) :=
 def Increasing (s : ℕ → ℝ) :=
   ∀ n₁ n₂ : ℕ, n₁ ≤ n₂ → s n₁ ≤ s n₂
 
+def Increasing₁ (s : ℕ → ℝ) :=
+  ∀ n : ℕ, s n ≤ s (n + 1)
+
 @[simp]
 def Decreasing (s : ℕ → ℝ) :=
   ∀ n₁ n₂ : ℕ, n₁ ≤ n₂ → s n₁ ≥ s n₂
