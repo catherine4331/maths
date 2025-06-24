@@ -99,12 +99,16 @@ example {x : ℝ} (x_pos : x > 0) : ∃ n : ℕ, n > x := by
   have bsa : sa.Bounded := by
     use x, x_pos
     intro n
-    have : sa n ≤ x := by
-      apply h_contra n
-    sorry
-  have isa : sa.Increasing := by
-    intro n₁ n₁ hn
-    sorry
+    unfold sa
+    rw [abs_le]
+    constructor
+    · exact le_trans (by linarith) (Nat.cast_nonneg' n)
+    · apply h_contra n
+  have isa : sa.Increasing₁ := by
+    intro n
+    unfold sa
+    rw [Nat.cast_add]
+    linarith
   obtain ⟨a, ha⟩ := monotone_convergence_increasing isa bsa
   obtain ⟨N, hN⟩ := ha (1 / 2) (by linarith)
   -- Now, we will obtain our contradiction by using subsequent terms from our sequence
@@ -113,6 +117,10 @@ example {x : ℝ} (x_pos : x > 0) : ∃ n : ℕ, n > x := by
   have r : a - (1 / 2) < N := by linarith
   have := hN (N + 1) (by linarith)
   obtain ⟨_, l⟩ := abs_lt.mp this
-  have l : N < a - (1 / 2) := by sorry
-  apply lt_irrefl N
-  sorry
+  have l : (N : ℝ) < a - (1 / 2) := by
+    have : sa (N + 1) = (sa N) + 1 := by
+      unfold sa
+      rw [@Nat.cast_add]
+      rw [@Nat.cast_one]
+    linarith
+  apply lt_irrefl (N : ℝ) (lt_trans l r)
