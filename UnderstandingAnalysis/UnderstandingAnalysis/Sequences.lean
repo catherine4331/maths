@@ -404,7 +404,7 @@ lemma monotone_convergence_decreasing (dsa : sa.Decreasing₁) (bsa : sa.Bounded
   · have := decreasing_equivalent dsa N n hn
     linarith
 
-theorem monotone_convergance (msa : sa.Monotone) (bsa : sa.Bounded) : sa.Convergent := by
+theorem monotone_convergence (msa : sa.Monotone) (bsa : sa.Bounded) : sa.Convergent := by
   rcases msa with (i | d)
   exact monotone_convergence_increasing i bsa
   exact monotone_convergence_decreasing d bsa
