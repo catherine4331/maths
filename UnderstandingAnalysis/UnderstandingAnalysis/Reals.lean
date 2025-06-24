@@ -39,6 +39,30 @@ end Set
 
 axiom aoc {A : Set ℝ} : A.Nonempty ∧ A.BoundedAbove ↔ ∃ s : ℝ, A.Supremum s
 
+theorem infimum_exists {A : Set ℝ} (hne : A.Nonempty) (hb : A.BoundedBelow) : ∃ i, A.Infimum i := by
+  let B := {b : ℝ | A.LowerBound b}
+  have B_nonempty : B.Nonempty := by
+    rcases hb with ⟨l, hl⟩
+    use l, hl
+  have b_bu : B.BoundedAbove := by
+    rcases hne with ⟨a, ha⟩
+    use a
+    rintro b hb
+    exact hb a ha
+  have ⟨s, hs⟩ := aoc.mp ⟨B_nonempty, b_bu⟩
+  use s
+  -- Show that s is the infimum of A
+  constructor
+  -- Show that s is a lower bound for A
+  · rintro a ha
+    have : B.UpperBound a := by
+      rintro b hb
+      exact hb a ha
+    exact hs.right a this
+  -- s is the greatest lower bound
+  · rintro l hl
+    apply hs.left l hl
+
 lemma sup_analytic {A : Set ℝ} {s : ℝ} (h : A.UpperBound s) :
     A.Supremum s ↔ ∀ ε > 0, ∃ a ∈ A, s - ε < a := by
   simp

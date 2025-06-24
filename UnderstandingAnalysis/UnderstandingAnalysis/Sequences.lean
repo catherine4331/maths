@@ -32,6 +32,7 @@ def ConvergesToTopological (s : ℕ → ℝ) (a : ℝ) :=
 def Increasing (s : ℕ → ℝ) :=
   ∀ n₁ n₂ : ℕ, n₁ ≤ n₂ → s n₁ ≤ s n₂
 
+@[simp]
 def Increasing₁ (s : ℕ → ℝ) :=
   ∀ n : ℕ, s n ≤ s (n + 1)
 
@@ -40,8 +41,12 @@ def Decreasing (s : ℕ → ℝ) :=
   ∀ n₁ n₂ : ℕ, n₁ ≤ n₂ → s n₁ ≥ s n₂
 
 @[simp]
+def Decreasing₁ (s : ℕ → ℝ) :=
+  ∀ n : ℕ, s n ≥ s (n + 1)
+
+@[simp]
 def Monotone (s : ℕ → ℝ) :=
-  s.Increasing ∨ s.Decreasing
+  s.Increasing₁ ∨ s.Decreasing₁
 
 end Function
 
@@ -141,7 +146,6 @@ section
 
 variable {sa sb sc : ℕ → ℝ} {a b c: ℝ}
 
-
 theorem algebraic_limit_mul_const (c : ℝ) (cs : sa.ConvergesTo a) :
     (fun n ↦ c * sa n).ConvergesTo (c * a) := by
   by_cases h : c = 0
@@ -163,7 +167,6 @@ theorem algebraic_limit_mul_const (c : ℝ) (cs : sa.ConvergesTo a) :
                       _ < ε / |c| * |c| := mul_lt_mul (hN n hn) (le_refl |c|) c_pos (le_of_lt pos)
                       _ = ε := by rw [mul_comm, (mul_div_cancel₀ ε (abs_ne_zero.mpr h))]
 
--- This lemma is quite probably not needed, we might figure out how to remove it later
 lemma algebraic_limit_neg (csa : sa.ConvergesTo a) :
     (fun n ↦ -sa n).ConvergesTo (-a) := by
   intro ε ε_pos
@@ -319,7 +322,33 @@ theorem seq_squeeze {l : ℝ} (csa : sa.ConvergesTo a) (csc : sc.ConvergesTo c) 
     sb n - l ≤ sc n - l := by exact tsub_le_tsub_right (b_le_c n) l
            _ < ε := by exact (abs_lt.mp (hNb n (le_of_max_le_right hn))).right
 
-theorem monotone_convergence_increasing (isa : sa.Increasing) (bsa : sa.Bounded) : sa.Convergent := by
+lemma increasing_equivalent (h : sa.Increasing₁) : sa.Increasing := by
+  intro n₁ n₂ hn
+  induction' n₂ using Nat.strongRec with n₂ ih
+  · by_cases h₁ : n₁ = n₂
+    · rw [h₁]
+    · have : n₁ < n₂ := by omega
+      have l := ih (n₂ - 1) (by omega) (by omega)
+      have r : sa (n₂ - 1) ≤ sa n₂ := by
+        have : n₂ - 1 + 1 = n₂ := by omega
+        rw [← this]
+        exact h (n₂ - 1)
+      exact le_trans l r
+
+lemma decreasing_equivalent (h : sa.Decreasing₁) : sa.Decreasing := by
+  intro n₁ n₂ hn
+  induction' n₂ using Nat.strongRec with n₂ ih
+  · by_cases h₁ : n₁ = n₂
+    · rw [h₁]
+    · have : n₁ < n₂ := by omega
+      have l := ih (n₂ - 1) (by omega) (by omega)
+      have r : sa (n₂ - 1) ≥ sa n₂ := by
+        have : n₂ - 1 + 1 = n₂ := by omega
+        rw [← this]
+        exact h (n₂ - 1)
+      apply le_trans r l
+
+lemma monotone_convergence_increasing (isa : sa.Increasing₁) (bsa : sa.Bounded) : sa.Convergent := by
   let A := {a : ℝ | ∃ n : ℕ, a = sa n}
   obtain ⟨M, ⟨M_pos, hM⟩⟩ := bsa
   have ab : A.BoundedAbove := by
@@ -342,9 +371,42 @@ theorem monotone_convergence_increasing (isa : sa.Increasing) (bsa : sa.Bounded)
   intro n hn
   apply abs_lt.mpr
   constructor
-  · have := isa N n hn
+  · have := increasing_equivalent isa N n hn
     linarith
   · have := ab (sa n) ⟨n, rfl⟩
     linarith
+
+lemma monotone_convergence_decreasing (dsa : sa.Decreasing₁) (bsa : sa.Bounded) : sa.Convergent := by
+  let A := {a : ℝ | ∃ n : ℕ, a = sa n}
+  obtain ⟨M, ⟨M_pos, hM⟩⟩ := bsa
+  have ab : A.BoundedBelow := by
+    use -M
+    intro a ha
+    obtain ⟨n, rfl⟩ := Set.mem_setOf.mp ha
+    exact neg_le_of_abs_le (hM n)
+  have ane : A.Nonempty := by use sa 0, 0
+  obtain ⟨a, ha⟩ := infimum_exists ane ab
+  clear ane ab hM M M_pos
+    -- It seems likely that a is the limit we're looking for
+  use a
+  intro ε ε_pos
+  -- We can use the fact that a is the infimum to find an element of sa that's close enough
+  have ab := ha.left
+  rw [inf_analytic ha.left] at ha
+  obtain ⟨aN, ⟨haN, aN_ε⟩⟩ := ha ε ε_pos
+  obtain ⟨N, rfl⟩ := Set.mem_setOf.mp haN
+  use N
+  intro n hn
+  apply abs_lt.mpr
+  constructor
+  · have := ab (sa n) ⟨n, rfl⟩
+    linarith
+  · have := decreasing_equivalent dsa N n hn
+    linarith
+
+theorem monotone_convergance (msa : sa.Monotone) (bsa : sa.Bounded) : sa.Convergent := by
+  rcases msa with (i | d)
+  exact monotone_convergence_increasing i bsa
+  exact monotone_convergence_decreasing d bsa
 
 end
