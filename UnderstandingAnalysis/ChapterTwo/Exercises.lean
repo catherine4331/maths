@@ -170,7 +170,8 @@ example {sa sb : ℕ → ℝ}
     (h_order : ∀ n, sa n ≤ sb n) :
     ∃ c, ∀ n, sa n ≤ c ∧ c ≤ sb n := by
   -- Firstly we need to show a & b are bounded and monotone
-  have bsa : sa.Bounded := by sorry
+  -- The sequences are bounded, but it's a bit of a pain to formalise
+  have bsa : sa.Bounded := sorry
   have isa : sa.Increasing₁ := by
     intro n
     exact (h_nested n).left

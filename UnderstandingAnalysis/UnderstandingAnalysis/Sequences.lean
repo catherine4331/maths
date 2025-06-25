@@ -5,6 +5,10 @@ import UnderstandingAnalysis.Reals
 namespace Function
 
 @[simp]
+def Subsequence (s : ℕ → ℝ) (φ : ℕ → ℕ) (_ : StrictMono φ) :=
+  s ∘ φ
+
+@[simp]
 def ConvergesTo (s : ℕ → ℝ) (a : ℝ) :=
   ∀ ε > 0, ∃ N : ℕ, ∀ n ≥ N, |s n - a| < ε
 
@@ -408,5 +412,31 @@ theorem monotone_convergence (msa : sa.Monotone) (bsa : sa.Bounded) : sa.Converg
   rcases msa with (i | d)
   exact monotone_convergence_increasing i bsa
   exact monotone_convergence_decreasing d bsa
+
+end
+
+section
+
+variable {sa : ℕ → ℝ} {φ : ℕ → ℕ} {a : ℝ}
+
+-- The subsequence map always moves us further forward in the sequence
+-- This is often handy
+lemma ss_index_ge (φ_sm : StrictMono φ) : ∀ n, φ n ≥ n := by
+  intro n
+  induction' n with n ih
+  · simp
+  · trans φ n + 1
+    · simp
+      rw [add_comm, add_comm n 1]
+      exact φ_sm.add_le_nat 1 n
+    · linarith
+
+theorem sc_same_limit (csa : sa.ConvergesTo a) (φ_sm : StrictMono φ) : (sa.Subsequence φ φ_sm).ConvergesTo a := by
+  intro ε ε_pos
+  obtain ⟨N, hN⟩ := csa ε ε_pos
+  use N
+  intro n hn
+  apply hN (φ n)
+  exact le_trans hn (ss_index_ge φ_sm n)
 
 end
