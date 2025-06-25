@@ -125,6 +125,46 @@ example {x : ℝ} (x_pos : x > 0) : ∃ n : ℕ, n > x := by
     linarith
   apply lt_irrefl (N : ℝ) (lt_trans l r)
 
+lemma mci_lt {sa : ℕ → ℝ} {a : ℝ} (isa : sa.Increasing₁) (csa : sa.ConvergesTo a) : ∀ n, sa n ≤ a := by
+  by_contra! hc
+  obtain ⟨N₁, hN₁⟩ := hc
+  obtain ⟨N₂, hN₂⟩ := csa (sa N₁ - a) (by linarith)
+  -- If N₁ is bigger than N₂, we immidiately have our contradiction. Otherwise we'll
+  -- need to use the fact that sa is increasing
+  by_cases hn : N₁ ≥ N₂
+  · have := hN₂ N₁ hn
+    obtain ⟨_, l⟩ := abs_lt.mp this
+    exact lt_irrefl (sa N₁ - a) l
+  · push_neg at hn
+    have hs : sa N₁ ≤ sa N₂ := increasing_equivalent isa N₁ N₂ (le_of_lt hn)
+    have := hN₂ N₂ (by rfl)
+    obtain ⟨_, l⟩ := abs_lt.mp this
+    have : sa N₂ - a < sa N₂ - a := by calc
+      sa N₂ - a < sa N₁ - a := by exact l
+              _ ≤ sa N₂ - a := by exact tsub_le_tsub_right hs a
+    exact lt_irrefl (sa N₂ - a) this
+
+lemma mcd_lt {sa : ℕ → ℝ} {a : ℝ} (dsa : sa.Decreasing₁) (csa : sa.ConvergesTo a) : ∀ n, sa n ≥ a := by
+  by_contra! hc
+  obtain ⟨N₁, hN₁⟩ := hc
+  obtain ⟨N₂, hN₂⟩ := csa (a - sa N₁) (by linarith)
+  -- If N₁ is bigger than N₂, we immidiately have our contradiction. Otherwise we'll
+  -- need to use the fact that sa is increasing
+  by_cases hn : N₁ ≥ N₂
+  · have := hN₂ N₁ hn
+    obtain ⟨r, _⟩ := abs_lt.mp this
+    have : a - sa N₁ < a - sa N₁ := by linarith
+    exact lt_irrefl (a - sa N₁) this
+  · push_neg at hn
+    have hs : sa N₁ ≥ sa N₂ := decreasing_equivalent dsa N₁ N₂ (le_of_lt hn)
+    have := hN₂ N₂ (by rfl)
+    obtain ⟨r, _⟩ := abs_lt.mp this
+    have : sa N₁ - a < sa N₂ - a := by linarith
+    have : sa N₁ - a < sa N₁ - a := by calc
+      sa N₁ - a < sa N₂ - a := by exact this
+              _ ≤ sa N₁ - a := by exact tsub_le_tsub_right hs a
+    exact lt_irrefl (sa N₁ - a) this
+
 example {sa sb : ℕ → ℝ}
     (h_nested : ∀ n, sa (n + 1) ≥ sa n ∧ sb (n + 1) ≤ sb n)
     (h_order : ∀ n, sa n ≤ sb n) :
@@ -141,4 +181,12 @@ example {sa sb : ℕ → ℝ}
   obtain ⟨a, ha⟩ := monotone_convergence_increasing isa bsa
   obtain ⟨b, hb⟩ := monotone_convergence_decreasing dsb bsb
   have a_le_b := by apply order_limit_le ha hb h_order
-  -- We need to show that ∀ n, sa n < a. This is kinda beating around the bush but we can't assume the existence of the sup
+  -- For any n, we need to show that [an, bn] has elements. I claim that [a, b] will always work
+  use a
+  -- Since we can't assume the existence of a sup, we can use the lemma's we proved above
+  intro n
+  constructor
+  · apply mci_lt isa ha
+  · trans b
+    apply a_le_b
+    apply mcd_lt dsb hb
