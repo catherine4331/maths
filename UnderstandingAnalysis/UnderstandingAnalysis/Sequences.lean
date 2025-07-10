@@ -439,4 +439,7 @@ theorem sc_same_limit (csa : sa.ConvergesTo a) (φ_sm : StrictMono φ) : (sa.Sub
   apply hN (φ n)
   exact le_trans hn (ss_index_ge φ_sm n)
 
+theorem bolzano_weierstrass (bsa : sa.Bounded) : ∃ (φ : ℕ → ℕ) (φ_sm : StrictMono φ), (sa.Subsequence φ φ_sm).Convergent := by
+  sorry
+
 end

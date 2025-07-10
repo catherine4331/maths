@@ -1,15 +1,67 @@
 \documentclass{article}
 \usepackage{amsmath}
+\usepackage{amsthm}
+
+\newtheorem{theorem}{Theorem}
 
 \author{Catherine Reid}
-\title{Chapter Two Exercises}
+\title{Chapter Two Theorems \& Exercises}
 
 \begin{document}
 
 \maketitle
 
-\textbf{Exercise 2.5.4}
+\textbf{Theorem 2.5.5 (Bolzano-Weierstrass)} Every bounded sequence contains a convergent subsequence
+\begin{proof}
+    Let $(a_n)$ be a bounded sequence so that there exists $M > 0$ such that $|a_n| \le M$ for all $n \in N$. Bisect
+    the closed interval $[-M, M]$ into the two closed intervals $[-M, 0]$ and $[0, M]$. It must be the case that at least one of
+    these intervals contains an infinte number of terms of $(a_n)$. Choose an interval for which this is the case and label it $I_1$.
+    Let $a_{n_1}$ be some term from $(a_n)$ such that $a_{n_1} \in I_1$.
 
+    Now, bisect $I_1$ into closed intervals of equal length and let $I_2$ be one containing an infinte number of terms
+    of $(a_n)$. Because we have an infinite number of terms to choose from, it must be possible to select $n_2$ such that
+    $a_{n_2} \in I_2$ and $n_2 > n_1$.
+
+    In general, construct $I_{k}$ by bisecting $I_{k-1}$ into two closed intervals of equal length and selecting one which
+    has an infinite number of terms of $(a_n)$ in it. We then select $n_k$ such that $n_k > n_{k-1} > ... > n_1$ and $a_{n_k} \in I_k$
+
+    We now claim that the subsequence $(a_{n_k})$ is a convergent subsequence. Firstly we need a candidate for the limit. Since we have that
+    \begin{align*}
+        I_1 \subseteq  I_2 \subseteq I_3 \subseteq  I_4 \subseteq \cdots
+    \end{align*}
+    we know that by the nested interval principle there exists some element $a \in \mathbf{R}$ such that $a \in {\bigcap}_{k=1}^\infty I_k$.
+    We will now show that $(a_{n_k}) \to a$
+    Let $\varepsilon > 0$. By construction the length of $I_k$ is $M(1/2)^{k-1}$ which converges to 0. Choose $N$ so that
+    $k \ge N$ implies that the length of $I_k$ is less that $\varepsilon$. Since both $a$ and $a_{n_k}$ are in $I_k$, this implies
+    that $|a_{n_k} - a| < \varepsilon$.
+\end{proof}
+\pagebreak
+
+\textbf{Exercise 2.5.4} Assume that the nested interval principle is true and use it to provide a proof of the axiom of completeness.
+Assume that $(1/2^n) \to 0$.
+
+\begin{proof}
+    Let $A \subset \mathbf{R}$ be non-empty and bounded above. We begin by considering the closed interval $[a, b]$ where $a \in A$ and
+    $b$ is an upper bound of $A$. Label this interval $I_1$. In general we will construct the interval $I_k$ by bisecting $I_{k-1}$ into
+    two closed intervals of equal length. We will call the left subinterval $R_{k-1}$ and the right subinterval $L_{k-1}$. We then use the
+    following rule to construct $I_k$:
+    \begin{align*}
+        I_k = 
+        \begin{cases} 
+        R_{k-1}, & \text{if } A \cap R_{k-1} \ne \emptyset \\
+        L_{k-1}, & \text{otherwise}
+    \end{cases}
+    \end{align*}
+
+    The sets
+    \begin{align*}
+        I_1 \subseteq  I_2 \subseteq I_3 \subseteq  I_4 \subseteq \cdots
+    \end{align*}
+    form a nested sequence of closed intervals, and by the nested interval principle there exists at least one point $s \in \mathbf{R}$ contained
+    in every $I_k$. We claim that $s = \sup(A)$.
+    
+
+\end{proof}
 
 
 \end{document}

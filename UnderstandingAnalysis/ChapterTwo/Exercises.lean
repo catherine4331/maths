@@ -191,3 +191,51 @@ example {sa sb : ℕ → ℝ}
   · trans b
     apply a_le_b
     apply mcd_lt dsb hb
+
+-- 2.5.2
+example {sa : ℕ → ℝ} (ss_c : ∀ (φ : ℕ → ℕ) (φ_sm : StrictMono φ), (sa.Subsequence φ φ_sm).Convergent) : sa.Convergent := by
+  -- Define φ as one step forward in the sequence
+  -- For a given ε > 0, it will have an N fulfilling the convergence criteria
+  -- This N will work for our original sequence as well
+  let φ := fun n ↦ n + 1
+  have : StrictMono φ := by
+    intro a b ha
+    simp [φ]; exact ha
+  obtain ⟨a, ha⟩ := ss_c φ this
+  -- Now we have our limit, we can show sa converges to it
+  use a
+  intro ε ε_pos
+  obtain ⟨N, hN⟩ := ha ε ε_pos
+  simp [φ] at hN
+  use (N + 1)
+  intro n hn
+  have := hN (n - 1) (Nat.le_sub_one_of_lt hn)
+  have h_s : (n - 1 + 1) = n := by omega
+  rw [h_s] at this
+  exact this
+
+example {sa : ℕ → ℝ} (ss_d : ∃ (φ : ℕ → ℕ) (φ_sm : StrictMono φ), (sa.Subsequence φ φ_sm).Divergent) : sa.Divergent := by
+  -- We will use the fact that our subseqeuence is divergent to produce an element of sa that
+  -- is more that ε away from any limit. This shows that sa is also divergent
+  by_contra h_c
+  simp only [Function.Divergent] at h_c
+  push_neg at h_c
+  obtain ⟨a, ha⟩ := h_c
+  -- Let's get our divergent subsequence now
+  obtain ⟨φ, ⟨φ_sm, hd⟩⟩ := ss_d
+  simp only [Function.Divergent, Function.Convergent] at hd
+  push_neg at hd
+  have hd := hd a
+  simp only [Function.ConvergesTo] at hd
+  push_neg at hd
+  obtain ⟨ε, ⟨ε_pos, hε⟩⟩ := hd
+  -- Now we can obtain our contradiction
+  obtain ⟨N, hN⟩ := ha ε ε_pos
+  obtain ⟨n, ⟨hn, hC⟩⟩ := hε N
+  -- I am so bad at naming. hC is one half our final contradiction
+  have : φ n ≥ n := ss_index_ge φ_sm n
+  have := hN (φ n) (by linarith)
+  have : ε < ε := by calc
+    ε ≤ |sa (φ n) - a| := hC
+    _ < ε := this
+  exact lt_irrefl ε this
