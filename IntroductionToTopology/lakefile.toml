@@ -1,0 +1,14 @@
+name = "IntroductionToTopology"
+version = "0.1.0"
+defaultTargets = ["introductiontotopology"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+
+[[lean_lib]]
+name = "IntroductionToTopology"
+
+[[lean_exe]]
+name = "introductiontotopology"
+root = "Main"
