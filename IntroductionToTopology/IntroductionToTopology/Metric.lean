@@ -1,9 +1,9 @@
 import Mathlib.Tactic
 import Mathlib.Util.Delaborators
 
-structure Metric (α : Type*) where
-  δ : α → α → ℝ
-  δ_nonneg : ∀ x y : α, δ x y ≥ 0
-  δ_zero : ∀ x y : α, δ x y = 0 ↔ x = y
-  δ_symm : ∀ x y : α, δ x y = δ y x
-  δ_triangle : ∀ x y z : α, δ x z ≤ δ x y + δ y z
+class Metric (α : Type*) where
+  dist : α → α → ℝ
+  dist_nonneg : ∀ x y : α, dist x y ≥ 0
+  dist_zero : ∀ x y : α, dist x y = 0 ↔ x = y
+  dist_symm : ∀ x y : α, dist x y = dist y x
+  dist_triangle : ∀ x y z : α, dist x z ≤ dist x y + dist y z

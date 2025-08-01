@@ -1,0 +1,78 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+
+\newtheorem{theorem}{Theorem}
+
+\author{Catherine Reid}
+\title{Metric Spaces}
+
+\begin{document}
+
+\maketitle
+
+\textbf{Exercise 3.1:} Let $X$ be the set of continuous functions $f:[a, b] \to \mathbb{R}$. Let $d^*$ be the distance function
+on $X$ defined by
+\begin{align*}
+    d^*(f, g) = \int_{b}^{a}  \left|f(t) - g(t)\right|\,dt,
+\end{align*}
+for $f, g \in X$. For each $f \in X$, set
+\begin{align*}
+    I(f) = \int_{b}^{a} f(t)\,dt
+\end{align*}
+Prove that the function $I:(X, d^*) \to (\mathbb{R}, d)$ is continuous.
+
+\begin{proof}
+    Let $g \in X$. Let $\varepsilon > 0$. Choose $\delta = \varepsilon$. Suppose that $f \in X$ is such
+    that $d^*(f, g) < \delta$, that is
+    \begin{align*}
+        \int_{b}^{a}  \left|f(t) - g(t)\right|\,dt < \delta
+    \end{align*}
+    Next we note that
+    \begin{align*}
+        d(I(f), I(g)) &= \left|\int_{b}^{a} f(t)\,dt - \int_{b}^{a} g(t)\,dt\right|\\
+        &= \left|\int_{b}^{a} f(t) - g(t)\,dt\right|\\
+        &\le \int_{b}^{a} \left|f(t) - g(t)\right|\,dt\\
+        &< \delta\\
+        &= \varepsilon
+    \end{align*}
+    
+    Therefore, given $\varepsilon > 0$, there is a $\delta > 0$ such that $d(I(f), I(g)) < \varepsilon$ whenever
+    $d^*(f, g) < \delta$.
+\end{proof}
+
+\pagebreak
+\textbf{Exercise 3.2:}  Let $(X_i, d_i)$, $(Y_i, d^\prime_i)$, $i = 1, \dots, n$ be metric spaces. Let $f_i: X_i \to Y_i$,
+$i = 1, \dots, n$ be continuous functions. Let
+\begin{align*}
+    X = \prod_{i = 1}^{n} X_i & & \text{and} & & Y = \prod_{i = 1}^{n} Y_i
+\end{align*}
+and convert $X$ and $Y$ into metric spaces in the standard manner. Define the function $F: X \to Y$ by
+\begin{align*}
+    F(x_1, \dots, x_n) = (f_1(x_1), \dots, f_n(x_n))
+\end{align*}
+Prove that $F$ is continuous
+
+\begin{proof}
+    Let $a = (a_1, \dots, a_n) \in X$. Let $\varepsilon > 0$. Since each $f_i$ is continuous at $a_i$, we know that
+    given $\varepsilon > 0$, there exists a $\delta_i > 0$ such that $x_i \in X_i$ and $d_i(a_i, x_i) < \delta_i$ imply that
+    $d^\prime_i(f_i(x_i), f_i(a_i)) < \varepsilon$. Choose $\delta = \min_{1 \le i \le n} \delta_i$.
+
+    Now, suppose that $x = (x_i, \dots, x_n) \in X$ is such that $d(x, a) < \delta$. That is
+    \begin{align*}
+        \max_{1 \le i \le n} \left\{d_i(x_i, a_i)\right\} < \delta
+    \end{align*}
+
+    Then
+    \begin{align*}
+        d^\prime(F(x), F(a)) &= d^\prime((f_1(x_1), \dots, f_n(x_n)), (f_1(a_1), \dots, f_n(x_n)))\\
+        &= \max_{1 \le i \le n} \left\{d^\prime_i(f_i(x_i), f_i(a_i))\right\}\\
+        &< \varepsilon
+    \end{align*}
+    We justify the final conclusion by pointing out that since every $d_i(x_i, a_i) < \delta$, it is the case
+    that every $(d^\prime_i(f_i(x_i), f_i(a_i))) < \varepsilon$.
+\end{proof}
+
+
+\end{document}

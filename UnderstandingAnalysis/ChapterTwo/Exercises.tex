@@ -107,4 +107,35 @@ to the same limit $a \in \textbf{R}$. Show that $(a_n)$ must converge to $a$.
 
 \textbf{Exercise 2.5.7.} Extend the result proved in example 2.5.3 to the case $|b| < 1$.
 
+\begin{proof}
+    The case where $0 < b < 1$ is proved in Example 2.5.3. Also if $b = 0$ then $b^n = 0$ for all $n$, hence the limit is equal to 0.
+    We will now focus on the case where $-1 < b < 0$.
+
+    Split into two monotone subsequences (either b raised to the even n, or to the odd n), both of which converge to 0. Use the squeeze
+    theorem to show that since $(b_n)$ is always contained between these sequences (need to double up terms), then it also 
+    converges to 0.
+
+    For the other way, if $|b| \ge 1$ then the sequence does not converge (or it converges to 1 in the case of $b = 0$)
+\end{proof}
+
+\textbf{Exercise 2.5.8.} Given a sequence $(x_n)$, a particular term $x_m$ is called a peak term if no later term
+in the sequence exceeds it; i.e if $x_m \ge x_n$ for all $n \ge m$. Use this idea to show that every sequence contains a monotone
+subsequence, and therefore provide another proof of the Bolzano-Weierstrass theorem.
+
+\begin{proof}
+    A sequence either contains a finite number of peak terms, or it contains an infinite number of peak terms.
+
+    \textbf{Case 1:} The sequence contains a finite number of peak terms. Let $x_N$ be the final peak term.
+    The since there cannot be another peak term, we have that $x_m < x_n$ for all $n, m < N, n \ge m$. This is
+    precisely the defintion of an increasing sequence, and hence this is our monotone subsequence.
+
+    \textbf{Case 2:} The sequence contains an infinite number of peak terms. Consider the subsequence made of only these peaks
+    Each term has the property that $x_m \ge x_n$ for all $n \ge m$, which is precisely the defintion of a decreasing sequence.
+    Hence this is our monotone subsequence.
+
+    We have shown that every sequence contains a monotone subsequence. If the parent sequence is bounded, then so is this subsequence.
+    So the subsequence is bounded and monotone, so by the Monotone Convergence theorem it is convergent. Hence every bounded sequence contains
+    a convergent subsequence.
+\end{proof}
+
 \end{document}
