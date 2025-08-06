@@ -2,6 +2,7 @@
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{amsfonts}
+\usepackage{enumitem}
 
 \newtheorem{theorem}{Theorem}
 
@@ -87,7 +88,7 @@ or, equivalently
 
 \begin{proof}
     First suppose that $f$ is continuous at the point $a \in X$. For a neighbourhood $M$ of $f(a)$ we have an $\varepsilon > 0$ such
-    that $B(f(a);\,\varepsilon) \subset M$. Since $f$ is continous at $a$, there is a $\delta > 0$ such that $f(B(a;\,\delta)) \subset B(f(a);\,\varepsilon)$.
+    that $B(f(a);\,\varepsilon) \subset M$. Since $f$ is continuous at $a$, there is a $\delta > 0$ such that $f(B(a;\,\delta)) \subset B(f(a);\,\varepsilon)$.
     $N = B(a;\,\delta)$ is a neighbourhood of $a$. Therefore
     \begin{align*}
         f(N) = f(B(a;\,\delta)) \subset B(f(a);\,\varepsilon) \subset M
@@ -138,11 +139,117 @@ Prove that $f$ is not continuous at $a$, but is continuous everywhere else
 
     For any point $x$ where $x \ne a$, we have that $d(x, a) = \delta$ for some $\delta > 0$. Therefore $a \notin B(x;\,\delta)$,
     and so due to the definition of $f$, $f(B(a;\,\delta))$ is constant. This implies that $f$ is continuous at $x$, and so is
-    continous at any point other than $a$.
+    continuous at any point other than $a$.
 \end{proof}
 
 \textbf{Exercise 4.3:} Let $f: X \to Y$ be a function into a metric space $Y$. Let $a \in X$ at let $\mathfrak{B}_{f(a)}$ be a basis for
-the neighbourhood system at $f(a)$. Prove that $f$ is continous at $a$ if and only if for each $N \in \mathfrak{B}_{f(a)},\,f^{-1}(N)$ is
+the neighbourhood system at $f(a)$. Prove that $f$ is continuous at $a$ if and only if for each $N \in \mathfrak{B}_{f(a)},\,f^{-1}(N)$ is
 a neighbourhood for $a$.
+
+\begin{proof}
+    First we will assume $f$ is continuous at $a$. Each $N \in \mathfrak{B}_{f(a)}$ is a neighbourhood of $f(a)$. Therefore by Theorem 4.6 we know that there exists a neighbourhood of $M$ of $a$ such that
+    $M \subset f^{-1}(N)$. Thus, by Theorem 4.8, we can conclude that $f^{-1}(N)$ is also a neighbourhood of $a$.
+
+    Conversely, assume that for each $N \in \mathfrak{B}_{f(a)},\,f^{-1}(N)$ is a neighbourhood of $a$. Now, consider a neighbourhood $M$ of
+    $f(a)$. By definition for some $N \in \mathfrak{B}_{f(a)}$, we have $N \subset M$, so $f^{-1}(N) \subset f^{-1}(M)$. Since, $f^{-1}(N)$
+    is a neighbourhood of $a$, by Theorem 4.8 we can conclude that $f(a)$ is continuous
+\end{proof}
+
+\textbf{Exercise 4.4:} Let $a$ be a point on the real line $\mathbb{R}$. Prove that each of the following subsets of collections of 
+subsets of $\mathbb{R}$ constitutes a basis for the system of neighbourhoods at $a$.
+
+\begin{enumerate}[label=\roman*)]
+    \item All the closed intervals of the form $[a - \varepsilon,\,a + \varepsilon],\, \varepsilon > 0$.
+    
+    \begin{proof}
+        Consider a neighbourhood $N$ of $a$. By definiton there is a $\delta > 0$ such that
+        \begin{align*}
+            (a - \delta,\,a + \delta) \subset N
+        \end{align*}
+
+        Let $\varepsilon_0 = \delta / 2$. Then we have
+        \begin{align*}
+            [a - \varepsilon_0,\,a + \varepsilon_0] \subset (a - \delta,\,a + \delta) \subset N
+        \end{align*}
+        Thus an interval of the form $[a - \varepsilon,\,a + \varepsilon],\, \varepsilon > 0$ is a subset of every neighbourhood $N$ of $a$,
+        so the collection is a basis for the system of neighbourhoods of $a$
+    \end{proof}
+
+    \item All open balls $B(a;\, \varepsilon)$, $\varepsilon$ a positive rational number.
+    
+    \begin{proof}
+        Consider a neighbourhood $N$ of $a$. By definiton there is a $\delta > 0$ such that
+        \begin{align*}
+            B(a;\,\delta) \subset N
+        \end{align*}
+
+        By the density of the rationals in the reals, there exists a rational number $\varepsilon_0$ such that $0 < \varepsilon_0 < \delta$.
+        Therefore we have
+        \begin{align*}
+            B(a;\,\varepsilon_0) \subset B(a;\,\delta) \subset N
+        \end{align*}
+        Thus an open ball $B(a;\, \varepsilon)$ where $\varepsilon$ is a positive rational number is a subset of every neighbourhood $N$ of $a$,
+        so the collection is a basis for the system of neighbourhoods of $a$.
+    \end{proof}
+
+    \item All open balls $B\left(a;\,\dfrac{1}{n}\right)$, $n$ is a positive integer.
+    
+    \begin{proof}
+        Consider a neighbourhood $N$ of $a$. By definiton there is a $\delta > 0$ such that
+        \begin{align*}
+            B(a;\,\delta) \subset N
+        \end{align*}
+        By the Archimedian Property of the reals, there exists a natural number $n_0$ such that $\dfrac{1}{n_0} < \delta$. Therefore we have
+        \begin{align*}
+            B\left(a;\,\dfrac{1}{n_0}\right) \subset B(a;\,\delta) \subset N
+        \end{align*}
+        Thus an open ball $B\left(a;\,\dfrac{1}{n}\right)$ where $n$ is a positive integer is a subset of every neighbourhood $N$ of $a$,
+        so the collection is a basis for the system of neighbourhoods of $a$. 
+    \end{proof}
+\end{enumerate}
+
+Finally, show that no finite collection of subsets of $\mathbb{R}$ can be a basis for the system of neighbourhoods of $a$.
+
+\begin{proof}
+    Consider for the sake of contradiction that a finite collection of subsets of $\mathbb{R}$ can be the basis the the system of
+    neighbourhoods of $a$. Call this collection $\mathfrak{B}_a$.
+    
+    Now, for each element $B_i \in \mathfrak{B}_a$, there exists a $\delta_i > 0$ such that $B(a;\,\delta_i) \subset B_i$.
+    Since $\mathfrak{B}_a$ is finite, there exists an ordering such that
+    \begin{align*}
+        \delta_1 \le \delta_2 \le \dots \le \delta_n
+    \end{align*}
+    That is
+    \begin{align*}
+        B(a;\,\delta_1) \subset B(a;\,\delta_2) \subset \dots \subset B(a;\,\delta_n)
+    \end{align*}
+    Now, let $\varepsilon_0 = \dfrac{\delta_1}{2}$. Therefore we have
+    \begin{align*}
+        B(a;\,\varepsilon_0) \subset B(a;\,\delta_1) \subset B(a;\,\delta_2) \subset \dots \subset B(a;\,\delta_n)
+    \end{align*}
+    By definition, $B(a;\,\varepsilon_0)$ is a neighbourhood of $a$. But we have shown that it is a subset of every element of 
+    $\mathfrak{B}_a$, contradicting the fact that $\mathfrak{B}_a$ is a basis of the system of neighbourhoods of $a$. Therefore
+    we can conclude that no finite collection of subsets of $\mathbb{R}$ can be the basis of the system of neighbourhoods of $a$.
+\end{proof}
+\pagebreak
+
+\textbf{Exercise 4.6:} Let $a$ and $b$ be distinct points of a metric space $X$. Prove that there are neighbourhoods $N_a$ and $N_b$
+of $a$ and $b$ respectively such that $N_a \cap N_b = \emptyset$
+
+\begin{proof}
+    Since $a \ne b$, $d(a, b) > 0$. Let $\varepsilon = d(a, b)$. Now, let $N_a = B(a;\,\frac{\varepsilon}{2})$ and 
+    $N_b = B(b;\,\frac{\varepsilon}{2})$. Consider the point $x \in B(a;\,\frac{\varepsilon}{2})$. By definition
+    $d(a, x) \le \frac{\varepsilon}{2}$. We have that
+    \begin{align*}
+        d(a, b) &\le d(a, x) + d(x, b)\\
+        \varepsilon &\le \frac{\varepsilon}{2} + d(x, b)\\
+        \frac{\varepsilon}{2} &\le d(x, b)
+    \end{align*}
+    Therefore we can conclude that $x \notin B(b;\,\frac{\varepsilon}{2})$, and therefore $N_a \cap N_b = \emptyset$
+\end{proof}
+
+\textbf{Exercise 4.8:} Let $\mathbb{R}$ be the real numbers and let $f: \mathbb{R} \to \mathbb{R}$ a continuous function
+Suppose that for some number $a \in \mathbb{R},\,f(a) > 0$. Prove that there is a positive number $k$ and a closed interval
+$F = [a - \delta,\,a + \delta]$ for some $\delta > 0$ such that $f(x) \ge k$ for all $x \in F$.
 
 \end{document}
