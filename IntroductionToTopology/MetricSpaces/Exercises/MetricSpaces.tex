@@ -74,37 +74,6 @@ Prove that $F$ is continuous
     We justify the final conclusion by pointing out that since every $d_i(x_i, a_i) < \delta$, it is the case
     that every $(d^\prime_i(f_i(x_i), f_i(a_i))) < \varepsilon$.
 \end{proof}
-
-\pagebreak
-\textbf{Theorem 4.6:} Let $f(X, d) \to (Y, d^\prime)$. $f$ is continuous at a point $a \in X$ if and only if for each neighbourhood $M$ of $f(a)$
-there is a corresponding neighbourhood $N$ of $a$ such that
-\begin{align*}
-    f(N) \subset M,
-\end{align*}
-or, equivalently
-\begin{align*}
-    N \subset f^{-1}(M)
-\end{align*}
-
-\begin{proof}
-    First suppose that $f$ is continuous at the point $a \in X$. For a neighbourhood $M$ of $f(a)$ we have an $\varepsilon > 0$ such
-    that $B(f(a);\,\varepsilon) \subset M$. Since $f$ is continuous at $a$, there is a $\delta > 0$ such that $f(B(a;\,\delta)) \subset B(f(a);\,\varepsilon)$.
-    $N = B(a;\,\delta)$ is a neighbourhood of $a$. Therefore
-    \begin{align*}
-        f(N) = f(B(a;\,\delta)) \subset B(f(a);\,\varepsilon) \subset M
-    \end{align*}
-    
-    Conversely, suppose that $f$ satisfies the condition that for each neighbourhood of $M$ of $f(a)$, there is a corresponding neighbourhood
-    $N$ of $a$, such that $f(N) \subset M$. Let $\varepsilon > 0$ be given. We need to show that there exists a $\delta > 0$ such that
-    \begin{align*}
-        f(B(a;\,\delta)) \subset B(f(a);\,\varepsilon)
-    \end{align*}
-    Now, $B(f(a);\,\varepsilon) = M$ is a neighbourhood of $f(a)$ and therefore there is a neighbourhood $N$ of $a$ such that $f(N) \subset M$.
-    Since $N$ is a neighbourhood of $a$, there is a $\delta > 0$ such that $B(a;\,\delta) \subset N$. Therefore
-    \begin{align*}
-        f(B(a;\,\delta)) \subset f(N) \subset M = B(f(a);\,\varepsilon  )
-    \end{align*}
-\end{proof}
 \pagebreak
 
 \textbf{Exercise 4.1:} Let $(X, d)$ be a metric space such that $d(x, y) = 1$ whenever $x \ne y$. Let $a \in X$. Prove that $\{a\}$ is a

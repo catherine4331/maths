@@ -1,0 +1,66 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}
+
+\author{Catherine Reid}
+\title{Metric Spaces}
+
+\begin{document}
+
+\maketitle
+
+\textbf{Theorem 4.6:} Let $f(X, d) \to (Y, d^\prime)$. $f$ is continuous at a point $a \in X$ if and only if for each neighbourhood $M$ of $f(a)$
+there is a corresponding neighbourhood $N$ of $a$ such that
+\begin{align*}
+    f(N) \subset M,
+\end{align*}
+or, equivalently
+\begin{align*}
+    N \subset f^{-1}(M)
+\end{align*}
+
+\begin{proof}
+    First suppose that $f$ is continuous at the point $a \in X$. For a neighbourhood $M$ of $f(a)$ we have an $\varepsilon > 0$ such
+    that $B(f(a);\,\varepsilon) \subset M$. Since $f$ is continuous at $a$, there is a $\delta > 0$ such that $f(B(a;\,\delta)) \subset B(f(a);\,\varepsilon)$.
+    $N = B(a;\,\delta)$ is a neighbourhood of $a$. Therefore
+    \begin{align*}
+        f(N) = f(B(a;\,\delta)) \subset B(f(a);\,\varepsilon) \subset M
+    \end{align*}
+    
+    Conversely, suppose that $f$ satisfies the condition that for each neighbourhood of $M$ of $f(a)$, there is a corresponding neighbourhood
+    $N$ of $a$, such that $f(N) \subset M$. Let $\varepsilon > 0$ be given. We need to show that there exists a $\delta > 0$ such that
+    \begin{align*}
+        f(B(a;\,\delta)) \subset B(f(a);\,\varepsilon)
+    \end{align*}
+    Now, $B(f(a);\,\varepsilon) = M$ is a neighbourhood of $f(a)$ and therefore there is a neighbourhood $N$ of $a$ such that $f(N) \subset M$.
+    Since $N$ is a neighbourhood of $a$, there is a $\delta > 0$ such that $B(a;\,\delta) \subset N$. Therefore
+    \begin{align*}
+        f(B(a;\,\delta)) \subset f(N) \subset M = B(f(a);\,\varepsilon  )
+    \end{align*}
+\end{proof}
+\pagebreak
+
+\textbf{Theorem 5.4:} Let $(X, d),\,(Y, d^\prime)$ be metric spaces. Let $f: X \to Y$ be a function. Then $f$ is continuous at each point $a \in X$
+if and only if, whenever $\lim_n(a_n) = a$ for a sequence $(a_n)$ of points in $X$, $\lim_n(f(a_n)) = f(a)$.
+
+\begin{proof}
+    Suppose $f$ is continuous at $a$ and $lim_n(a_n) = a$. Let $V$ be a neighbourhood of $f(a)$. Then $f^{-1}(V)$ is a neighbourhood of $a$.
+    By Corollary 5.3, this means there is an integer $N$ such that $a_n \in f^{-1}(V)$ whenever $n > N$. Consequently $f(a_n) \in V$ whenever $n > N$.
+    Thus, for each neighbourhood $V$ of $f(a)$ there is an integer $N$ such that $f(a) \in V$ whenever $n > N$. Therefore, by Corollary 5.3, $\lim_n(f(a_n)) = f(a)$.
+
+    To show the converse, we shall use the contrapositive. That is, we will assume $f$ is not continuous at $a$ and show that this implies that there is at least
+    one sequence $(a_n)$ such that $\lim_n(a_n) = a$ but $\lim_n(f(a_n)) \ne f(a)$. Since $f$ is not continuous at $a$, there exists a neighbourhood $V$ of $f(a)$ such
+    that for each neighbourhood $U$ of $a$, $f(U) \not \subset V$. Specifically, for each neighbourhood
+    \begin{align*}
+        B\left(a;\,\frac{1}{n}\right),\,n = 1, 2, 3, \dots
+    \end{align*}
+    $f(B) \not \subset V$. Thus, for each positive integer $n$, there is a point $a_n \in  B\left(a;\,\frac{1}{n}\right)$
+    such that $f(a_n) \notin V$. Now, $d(a, a_n) < \frac{1}{n}$, so $lim_n(a_n) = a$, however since every
+    $f(a_n) \notin V$, by Corollary 5.3, $\lim_n(f(a_n)) \ne f(a)$. This concludes the proof
+\end{proof}
+
+\end{document}
